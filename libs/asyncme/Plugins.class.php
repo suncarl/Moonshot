@@ -72,7 +72,7 @@ abstract class Plugins
         $func = $asyRequest->action;
         $func = $func.'Action';
         if (method_exists($this,$func)) {
-            $data = $this->$func($beforeData);
+            $data = $this->$func($asyRequest,$beforeData);
         }
         return $data;
     }

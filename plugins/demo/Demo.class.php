@@ -17,12 +17,24 @@ class Demo extends Plugins
 {
 
 
-    public function IndexAction($req)
+    public function IndexAction($req,$preData)
     {
         $status = true;
         $mess = '成功';
         $data = [
             'test'=>'what the hell',
+            'req'=>$req,
+        ];
+
+        return new ResponeHelper($status,$mess,$data);
+    }
+
+    public function testAction($req,$preData)
+    {
+        $status = true;
+        $mess = '成功';
+        $data = [
+            'test'=>'this is the test action',
             'req'=>$req,
         ];
 
