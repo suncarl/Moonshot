@@ -33,6 +33,9 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
         }
 
         $pl_service = new Service($asyRequest->compony_id,$asyRequest->service_id);
+        $pl_service->setCache($this->redis);
+        $pl_service->setDb($this->db);
+
 
         include NG_ROOT.'/plugins/'.$plugin_name.'/'.$plugin_class.'.class.php';
 

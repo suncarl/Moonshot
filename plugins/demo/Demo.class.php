@@ -88,4 +88,15 @@ class Demo extends Plugins
         return new ResponeHelper($status,$mess,$data,'json');
 
     }
+
+    public function findAction($req)
+    {
+
+        $map = [];
+        $data = $this->service->getDb()->table('plugins_rel')->where($map)->first();
+        $data = (array)$data;
+        $status = true;
+        $mess = '成功';
+        return new ResponeHelper($status,$mess,$data,'json');
+    }
 }

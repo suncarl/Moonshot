@@ -12,7 +12,6 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Container\Container;
 use Illuminate\Events\Dispatcher;
 
-
 //日志中间件
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];
