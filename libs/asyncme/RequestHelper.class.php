@@ -34,6 +34,8 @@ class RequestHelper
     public $module = null;
     //动作
     public $action = null;
+    //输出格式
+    public $output = 'json';
 
 
     public function __construct(Request $request)
@@ -74,6 +76,10 @@ class RequestHelper
             $this->action = $query_datas['act'];
         } else {
             $this->action = 'index';
+        }
+
+        if (isset($query_datas['output'])) {
+            $this->output = $query_datas['output'];
         }
 
         $this->request_method = $request->getMethod();
