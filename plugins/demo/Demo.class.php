@@ -99,4 +99,14 @@ class Demo extends Plugins
         $mess = '成功';
         return new ResponeHelper($status,$mess,$data,'json');
     }
+
+    public function cacheAction($req)
+    {
+        $this->service->getCache()->set('engine','moon_shot_'.time());
+
+        $data = $this->service->getCache()->get('engine');;
+        $status = true;
+        $mess = '成功';
+        return new ResponeHelper($status,$mess,$data,'json');
+    }
 }
