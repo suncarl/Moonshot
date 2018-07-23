@@ -23,37 +23,116 @@ abstract class Plugins
 
     //运行的参数数组，内部传递
     public $args;
+
+    //服务对象
+    public $service;
+
+    //插件的命名空间
+    public $namespace;
+
+    //管理对象
+    private $admin;
+
     //构造函数
-    public function __construct($root,$custom='')
+    public function __construct($root,$custom='',$admin=null)
     {
         $this->plugin_root = $root;
         $this->custom = $custom;
         $this->args = [];
+        $this->admin = $admin;
     }
 
-
-
-    //正式运行
-    //运行的结果通过
-    public function real_run()
+    //设置服务对象
+    public function setService($service)
     {
-        $this->before();
-        $this->run();
-        $this->after();
+        $this->service = $service;
     }
+
+    //命名空间+表名+大Bid
+    public function tableName($table)
+    {
+        $tableName = '';
+        if($this->namespace) {
+            $tableName = $this->namespace.'_'.$table;
+        }
+        if($this->service) {
+            $tableName = $this->service->getBussineTableName($tableName);
+        }
+        return $tableName;
+    }
+
+
+    /**
+     * @param requestHelper
+     * @param $beforeData
+     * @return responeHelper
+     */
+    function real_run($asyRequest,$beforeData)
+    {
+        $func = $asyRequest->action;
+        $func = $func.'Action';
+        if (method_exists($this,$func)) {
+            $data = $this->$func($beforeData);
+        }
+        return $data;
+    }
+
 
     //运行主入口
-    abstract function run();
-    //运行之前
-    abstract public function before();
-    //运行之后
-    abstract public function after();
+    function run($asyRequest)
+    {
+        $beforeData = [];
+        if(method_exists($this,'before')) {
+            $beforeData = $this->before($asyRequest);
+        }
+
+        $data = $this->real_run($asyRequest,$beforeData);
+        if (method_exists($this,'after')) {
+            $data = $this->after($asyRequest,$data);
+        }
+
+        return $data;
+    }
+
     //安装的虚函数
-    abstract public function install();
+    public function install()
+    {
+        if($this->admin->vaild) {
+            //检查是不是管理员
+            if($this->service) {
+
+            }
+        }
+
+    }
     //卸载
-    abstract public function uninstall();
+    public function uninstall()
+    {
+        if($this->admin->vaild) {
+            //检查是不是管理员
+            if($this->service) {
+
+            }
+        }
+    }
     //更新
-    abstract public function upgrade();
+    public function upgrade()
+    {
+        if($this->admin->vaild) {
+            //检查是不是管理员
+            if($this->service) {
+
+            }
+        }
+    }
     //备份
-    abstract public function backup();
+    public function backup()
+    {
+        if($this->admin->vaild) {
+            //检查是不是管理员
+            if($this->service) {
+
+            }
+        }
+    }
 }

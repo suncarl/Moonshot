@@ -18,6 +18,8 @@ class RequestHelper
     public $compony_id;
     //用户id
     public $client_openid;
+    //请求方法
+    public $request_method;
     //路由对象
     public $router;
     //post数据
@@ -65,10 +67,16 @@ class RequestHelper
 
         if (isset($query_datas['mod'])) {
             $this->module = $query_datas['mod'];
+        } else {
+            $this->module = 'Index';
         }
         if (isset($query_datas['act'])) {
             $this->action = $query_datas['act'];
+        } else {
+            $this->action = 'index';
         }
+
+        $this->request_method = $request->getMethod();
 
         return $this;
     }

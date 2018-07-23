@@ -9,49 +9,23 @@
 namespace plugins\demo;
 
 use libs\asyncme\Plugins as Plugins;
+use libs\asyncme\RequestHelper as RequestHelper;
+use libs\asyncme\ResponeHelper as ResponeHelper;
 
 
 class Demo extends Plugins
 {
 
-    public function run()
+
+    public function IndexAction($req)
     {
+        $status = true;
+        $mess = '成功';
+        $data = [
+            'test'=>'what the hell',
+            'req'=>$req,
+        ];
 
-    }
-
-    //运行之前
-    public function before()
-    {
-
-    }
-
-    //运行之后
-    public function after()
-    {
-
-    }
-
-    //安装的虚函数
-    public function install()
-    {
-
-    }
-
-    //卸载
-    public function uninstall()
-    {
-
-    }
-
-    //更新
-    public function upgrade()
-    {
-
-    }
-
-    //备份
-    public function backup()
-    {
-
+        return new ResponeHelper($status,$mess,$data);
     }
 }
