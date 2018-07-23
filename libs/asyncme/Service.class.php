@@ -15,15 +15,18 @@ class Service
     public $service_id;
     //大B id
     public $bussine_id;
-
+    //数据库对象
     private $db = null;
-
+    //缓存对象
     private $cache = null;
+    //资源目录
+    private $asset_path;
 
     public function __construct($bussine_id,$service_id)
     {
         $this->service_id = $service_id;
         $this->bussine_id = $bussine_id;
+        $this->asset_path = './data/'.$this->bussine_id;
     }
 
     //设在db对象
@@ -59,6 +62,14 @@ class Service
 
         return $bussineTB;
     }
-
+    //返回资源地址
+    public function getAssetPath($folder='default',$customPath='')
+    {
+        if($customPath) {
+            return './data/'.$customPath.'/'.$folder;
+        } else {
+            return $this->asset_path.'/'.$folder;
+        }
+    }
 
 }

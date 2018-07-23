@@ -46,6 +46,6 @@ class ResponeHelper
 
     public function getType()
     {
-        return $this->reponse_type;
+        return strtolower($this->reponse_type);
     }
 }

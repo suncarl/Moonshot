@@ -10,12 +10,15 @@ namespace libs\asyncme;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use \Slim\Http\UploadedFile;
 use libs\exceptions\InvaildException;
 
 class RequestHelper
 {
     //企业id（大B）
     public $compony_id;
+    //业务id
+    public $service_id = 0;
     //用户id
     public $client_openid;
     //请求方法
@@ -34,6 +37,8 @@ class RequestHelper
     public $module = null;
     //动作
     public $action = null;
+    //上传文件对象
+    public $upload_files = null;
     //输出格式
     public $output = 'json';
 
@@ -62,9 +67,15 @@ class RequestHelper
         if ($request->isGet()) {
             $openid = $query_datas['openid'];
             $this->client_openid = $openid;
+            if(isset($query_datas['sid'])) {
+                $this->service_id = $query_datas['sid'];
+            }
         } else {
             $openid = $post_datas['openid'];
             $this->client_openid = $openid;
+            if(isset($post_datas['sid'])) {
+                $this->service_id = $post_datas['sid'];
+            }
         }
 
         if (isset($query_datas['mod'])) {
@@ -84,7 +95,8 @@ class RequestHelper
 
         $this->request_method = $request->getMethod();
 
-        return $this;
+        $this->upload_files = $request->getUploadedFiles();
+
     }
 
     public function build_json_data($status,$desc,$data=[])
