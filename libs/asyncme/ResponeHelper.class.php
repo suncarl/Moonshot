@@ -20,13 +20,18 @@ class ResponeHelper
 
     private $reponse_type;
 
+    private $template;
 
-    public function __construct($status,$mess,$data,$type='json')
+
+    public function __construct($status,$mess,$data,$type='json',$template='')
     {
         $this->status = $status;
         $this->mess = $mess;
         $this->data = $data;
         $this->reponse_type = $type;
+        if (strtolower($type)=='template') {
+            $this->template = $template;
+        }
     }
 
     public function getStatus()
@@ -47,5 +52,10 @@ class ResponeHelper
     public function getType()
     {
         return strtolower($this->reponse_type);
+    }
+
+    public function getTemplate()
+    {
+        return $this->template;
     }
 }

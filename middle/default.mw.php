@@ -62,6 +62,7 @@ $container['cosClient'] = function ($c) {
     return $cosClient;
 };
 
+
 //通用头部中间件
 $common_header_mw = function ($request, $response, $next ) {
     $response = $next($request, $response);
