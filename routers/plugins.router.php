@@ -28,7 +28,7 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
     $response_data = '';
     try {
 
-        if (!file_exists(NG_ROOT.'/plugins/'.$plugin_name.'/'.$plugin_class.'.class.php')) {
+        if (!file_exists(NG_ROOT.'/plugins/'.$plugin_name.'/'.$plugin_class.'.php')) {
             throw new InvaildException($plugin_class.' not invaild');
         }
 
@@ -37,7 +37,6 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
         $pl_service->setDb($this->db);
 
 
-        include NG_ROOT.'/plugins/'.$plugin_name.'/'.$plugin_class.'.class.php';
 
         $pl_class = 'plugins\\'.$plugin_name.'\\'.$plugin_class;
 

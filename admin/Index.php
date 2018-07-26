@@ -8,12 +8,11 @@
 
 namespace admin;
 
-use libs\asyncme\Plugins as Plugins;
-use libs\asyncme\RequestHelper as RequestHelper;
-use libs\asyncme\ResponeHelper as ResponeHelper;
-use \Slim\Http\UploadedFile;
 
-class Index extends Plugins
+use libs\asyncme\Plugins;
+use admin\model;
+
+class Index extends AdminBase
 {
     public function IndexAction($req,$preData)
     {
@@ -24,19 +23,22 @@ class Index extends Plugins
             'req'=>$req,
         ];
 
-        return new ResponeHelper($status,$mess,$data);
+        return $this->render($status,$mess,$data);
     }
 
     public function tAction($req,$preData)
     {
         $status = true;
         $mess = '成功';
+        $model = new model\Admin();
+
         $data = [
             'title'=>'hello admin!',
             'req'=>$req,
-            'content'=>'this is the base template in admin plugins',
+            'content'=>'this is the base template in admin plugins with model:'.$model->test(),
         ];
 
-        return new ResponeHelper($status,$mess,$data,'template','Index/t.twig.html');
+
+        return $this->render($status,$mess,$data,'template','Index/t');
     }
 }

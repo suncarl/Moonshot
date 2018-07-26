@@ -27,11 +27,15 @@ abstract class Plugins
     //服务对象
     public $service;
 
+    //模版对象
+    public $view;
+
     //插件的命名空间
     public $namespace;
 
     //管理对象
     private $admin;
+
 
     //构造函数
     public function __construct($root,$custom='',$admin=null)
@@ -40,12 +44,29 @@ abstract class Plugins
         $this->custom = $custom;
         $this->args = [];
         $this->admin = $admin;
+
+        $this->callInit(0);
+    }
+
+    private function callInit($lelve)
+    {
+        if(method_exists($this,'initialize')) {
+            $this->initialize($lelve);
+        }
     }
 
     //设置服务对象
     public function setService($service)
     {
         $this->service = $service;
+        $this->callInit(1);
+    }
+
+    //设置模版对象
+    public function setView($view)
+    {
+        $this->view = $view;
+        $this->callInit(2);
     }
 
     //命名空间+表名+大Bid

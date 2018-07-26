@@ -16,6 +16,7 @@ use libs\asyncme\RequestHelper;
 use libs\asyncme\Service;
 use libs\asyncme\ResponeHelper;
 
+
 //管理员是一个特殊的大B,管理插件
 //request : http://work.crab.com/wxapp/debug.php/sys/123/admin?mod=index&act=index
 $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Response $response, array $args) {
@@ -29,7 +30,7 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
     $response_data = '';
     try {
 
-        if (!file_exists(NG_ROOT.'/'.$plugin_name.'/'.$plugin_class.'.class.php')) {
+        if (!file_exists(NG_ROOT.'/'.$plugin_name.'/'.$plugin_class.'.php')) {
             throw new InvaildException($plugin_class.' not invaild');
         }
 
@@ -37,13 +38,12 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
         $pl_service->setCache($this->redis);
         $pl_service->setDb($this->db);
 
-
-        include NG_ROOT.'/'.$plugin_name.'/'.$plugin_class.'.class.php';
-
         $pl_class = $plugin_name.'\\'.$plugin_class;
+
 
         $pl = new $pl_class(NG_ROOT.'/'.$plugin_name.'/');
         $pl->setService($pl_service);
+        $pl->setView($this->admin_view);
         $pl_respone = $pl->run($asyRequest);
         if ($pl_respone) {
             $response_output = $pl_respone->getType();
@@ -51,6 +51,7 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
             $response_template = $pl_respone->getTemplate();
             $json_data = $asyRequest->build_json_data($pl_respone->getStatus(),$pl_respone->getMessage(),$pl_respone->getData());
         } else {
+
             $json_data = $asyRequest->build_json_data(false,'nothing');
         }
 
