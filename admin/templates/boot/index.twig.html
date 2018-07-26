@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Set render engine for 360 browser -->
+    <meta name="renderer" content="webkit">
+    <meta charset="UTF-8">
+    <title>{{ site_title }}</title>
+    <meta name="description" content="{{ site_desc }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/wxapp/asset/simpleboot/themes/{{ site_style }}/theme.min.css" rel="stylesheet">
+    <link href="/wxapp/asset/simpleboot/css/simplebootadmin.css" rel="stylesheet">
+    <link href="/wxapp/asset/simpleboot/font-awesome/4.4.0/css/font-awesome.min.css?page=index"  rel="stylesheet" type="text/css">
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/wxapp/asset/simpleboot/font-awesome/4.4.0/css/font-awesome-ie7.min.css">
+    <![endif]-->
+    <link rel="stylesheet" href="/wxapp/asset/simpleboot/themes/{{ site_style }}/simplebootadminindex.min.css?">
+    <link href="/wxapp/asset/js/artDialog/skins/default.css" rel="stylesheet" />
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="/wxapp/asset/simpleboot/css/simplebootadminindex-ie.css?" />
+    <![endif]-->
+    <style>
+        .navbar .nav_shortcuts .btn{margin-top: 5px;}
+        .navbar .nav_lists .btn{margin: 10px 5px;}
+        .navbar .nav_lists .btn-mid{padding: 2px 12px;}
+        .macro-component-tabitem{width:101px;}
+        .item-main-toggle-off{margin-left: 0px !important;}
+
+        /*-----------------导航hack--------------------*/
+        .nav-list>li.open{position: relative;}
+        .nav-list>li.open .back {display: none;}
+        .nav-list>li.open .normal {display: inline-block !important;}
+        .nav-list>li.open a {padding-left: 7px;}
+        .nav-list>li .submenu>li>a {background: #fff;}
+        .nav-list>li .submenu>li a>[class*="fa-"]:first-child{left:20px;}
+        .nav-list>li ul.submenu ul.submenu>li a>[class*="fa-"]:first-child{left:30px;}
+        /*----------------导航hack--------------------*/
+    </style>
+    <script>
+        //全局变量
+        var GV = {
+            HOST:"/wxapp/",
+            ROOT: "/",
+            WEB_ROOT: "/",
+            JS_ROOT: "/asset/js/"
+        };
+    </script>
+</head>
+<body style="min-width:900px;" screen_capture_injected="true">
+    <div id="right_tools_wrapper">
+
+        <span id="right_tools_clearcache" title="清除缓存" onclick="javascript:openapp('{{ path_for('sys', { 'bid': '123','pl_name':'admin' },) }}','right_tool_clearcache','清除缓存');"><i class="fa fa-trash-o right_tool_icon"></i></span>
+        <span id="toogle_left_side" title="显示边栏" ><i class="fa fa-toggle-on right_tool_icon"></i></span> &nbsp;&nbsp;
+        <span id="refresh_wrapper" title="刷新当前页面" ><i class="fa fa-refresh right_tool_icon"></i></span>
+    </div>
+</body>
+</html>

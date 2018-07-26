@@ -17,7 +17,7 @@ use Illuminate\Events\Dispatcher;
 //视图中间件
 $container['admin_view'] = function ($container) {
     $view = new \Slim\Views\Twig('../admin/templates', [
-        'cache' => 'data/cache'
+        //'cache' => 'data/cache'
     ]);
 
     // Instantiate and add Slim specific extension

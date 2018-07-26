@@ -12,6 +12,6 @@ namespace admin\model;
 class Admin
 {
     public function test(){
-        echo "test model";
+        return "test model";
     }
 }

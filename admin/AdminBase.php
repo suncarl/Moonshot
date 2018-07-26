@@ -26,7 +26,9 @@ class AdminBase extends Plugins
     public function initialize($level=0)
     {
         $global_view_var = [
-            'site_name' => '插件管理平台',
+            'site_title' => '插件管理平台',
+            'site_desc' => '插件,管理,平台,微信,小程序',
+            'site_style' => 'bluesky',
             'root'=> 'xxx',
         ];
         //从配置文件中读取

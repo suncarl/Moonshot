@@ -59,6 +59,15 @@ if(!$version) {
         die();
     }
 }
+
+//载入通用的函数
+$functions = glob(NG_ROOT.'/utils/*.inc.php');
+if ( $functions ) {
+    foreach ( $functions as $func) {
+        require $func;
+    }
+}
+
 //载入中间件
 $middle_wares = glob(NG_ROOT.'/middle/*.mw.php');
 if ( $middle_wares ) {
@@ -73,13 +82,7 @@ if ( $libs ) {
         require $lib;
     }
 }
-//载入通用的函数
-$functions = glob(NG_ROOT.'/utils/*.inc.php');
-if ( $functions ) {
-    foreach ( $functions as $func) {
-        require $func;
-    }
-}
+
 
 $routers = glob(NG_ROOT.'/routers/*.router.php');
 if ( $routers ) {
