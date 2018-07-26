@@ -41,7 +41,6 @@ class Index extends AdminBase
             'content'=>'this is the base template in admin plugins with model:'.$model->test(),
         ];
 
-
         return $this->render($status,$mess,$data,'template','Index/t');
     }
 }

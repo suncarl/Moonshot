@@ -40,6 +40,7 @@ class NgTwigExtension extends Twig_Extension
             new \Twig_SimpleFunction('path_for', array($this, 'pathFor')),
             new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
             new \Twig_SimpleFunction('async_me', array($this, 'asyncMe')),
+            new \Twig_SimpleFunction('url', array($this, 'url')),
         ];
     }
 
@@ -53,6 +54,14 @@ class NgTwigExtension extends Twig_Extension
         if (method_exists($this->uri, 'getBaseUrl')) {
             return $this->uri->getBaseUrl();
         }
+    }
+
+    //简写pathfor
+    public function url($url,$queryParams,$routename='sys')
+    {
+
+        $data = explode('/',$url);
+        return $this->router->pathFor($routename, $data, $queryParams);
     }
 
     public function asyncMe($who)
