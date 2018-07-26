@@ -67,14 +67,6 @@ if ( $functions ) {
         require $func;
     }
 }
-
-//载入中间件
-$middle_wares = glob(NG_ROOT.'/middle/*.mw.php');
-if ( $middle_wares ) {
-    foreach ( $middle_wares as $middle_ware) {
-        require $middle_ware;
-    }
-}
 //载入通用的类库
 $libs = glob(NG_ROOT.'/libs/*/*.class.php');
 if ( $libs ) {
@@ -82,6 +74,14 @@ if ( $libs ) {
         require $lib;
     }
 }
+//载入中间件
+$middle_wares = glob(NG_ROOT.'/middle/*.mw.php');
+if ( $middle_wares ) {
+    foreach ( $middle_wares as $middle_ware) {
+        require $middle_ware;
+    }
+}
+
 
 
 $routers = glob(NG_ROOT.'/routers/*.router.php');
