@@ -29,11 +29,15 @@ class Index extends AdminBase
     {
         $status = true;
         $mess = '成功';
+
         $model = new model\Admin();
 
         $data = [
             'title'=>'hello admin!',
-            'req'=>$req,
+            'bid'=>$req->compony_id,
+            'pl_name'=>$req->request_plugin,
+            'mod'=> $req->module,
+            'act'=>$req->action,
             'content'=>'this is the base template in admin plugins with model:'.$model->test(),
         ];
 
