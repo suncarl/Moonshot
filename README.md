@@ -28,4 +28,25 @@
 * use mysql as db
 * uploaded
 
+# 模版 useage
+* 模版变量连接符合 ～
+```
+{% set var1='123' %}
+{% set var2='admin' %}
+then:
+{{ var1~var2 }}
+result:
+123admin
+
+```
+
+* 提供path_for 方法
+```
+{{ path_for('sys',{'bid':111,'pl_name':admin},{'mod':index,'act':t}) }}
+```
+* 提供 URL 方法简化 path_for
+```
+{{ URL('sys','111/admin',{'mod':index,'act':t}) }}
+```
+
 

@@ -23,6 +23,8 @@ class NgTwigExtension extends Twig_Extension
      */
     private $uri;
 
+
+
     public function __construct($router, $uri)
     {
         $this->router = $router;
@@ -40,7 +42,7 @@ class NgTwigExtension extends Twig_Extension
             new \Twig_SimpleFunction('path_for', array($this, 'pathFor')),
             new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
             new \Twig_SimpleFunction('async_me', array($this, 'asyncMe')),
-            new \Twig_SimpleFunction('url', array($this, 'url')),
+            new \Twig_SimpleFunction('URL', array($this, 'parse_url')),
         ];
     }
 
@@ -57,11 +59,17 @@ class NgTwigExtension extends Twig_Extension
     }
 
     //简写pathfor
-    public function url($url,$queryParams,$routename='sys')
+    public function parse_url($name,$url,$queryParams)
     {
 
-        $data = explode('/',$url);
-        return $this->router->pathFor($routename, $data, $queryParams);
+        $app_route = $this->router->getNamedRoute('sys');
+        $url_lists = explode('/',$url);
+        $data = $app_route->getArguments();
+        $index = 0;
+        foreach($data as $key=>$val) {
+            $data[$key] = $url_lists[$index++];
+        }
+        return $this->router->pathFor($name, $data, $queryParams);
     }
 
     public function asyncMe($who)
