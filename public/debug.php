@@ -28,6 +28,9 @@ if (APPLICATION_ENV === 'debug') {
 }
 define('NG_ROOT',dirname(dirname(__FILE__)));
 
+session_cache_limiter(false);
+session_start();
+
 $config = include NG_ROOT.'/config/config.debug.inc.php';
 
 require NG_ROOT.'/vendor/autoload.php';

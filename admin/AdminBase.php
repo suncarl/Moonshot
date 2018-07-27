@@ -25,7 +25,6 @@ class AdminBase extends Plugins
     // 2 初始化模版对象后
     public function initialize($level=0)
     {
-
         if($level==2){
             $cache_key = 'global_view_val';
             $this->global_view_var = $this->service->getCache()->get($cache_key);
@@ -36,8 +35,15 @@ class AdminBase extends Plugins
                 $this->global_view_var = $config_vals;
                 $this->service->getCache()->set($cache_key,$config_vals,3600);
             }
-
+            if(method_exists($this,'auth')) {
+                return $this->auth();
+            }
         }
+    }
+
+    public function redirect($url)
+    {
+        header('Location:'.$url);
     }
 
     public function render($status,$mess,$data,$type='json',$template='') {

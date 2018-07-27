@@ -11,7 +11,7 @@ namespace admin;
 use libs\asyncme\Plugins;
 use admin\model;
 
-class Index extends AdminBase
+class Index extends PermissionBase
 {
     public function IndexAction($req,$preData)
     {

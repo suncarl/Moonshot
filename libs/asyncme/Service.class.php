@@ -23,24 +23,32 @@ class Service
     private $redis = null;
     //资源目录
     private $asset_path;
+    //request对象
+    private $request_helper = null;
     //实例对象
     private static $instance;
 
     //单例方法
-    static public function getInstance($bussine_id,$service_id)
+    static public function getInstance($bussine_id,$service_id,$request_helper=null)
     {
         //以后扩展支持多个db的识别，现在不操作
         if (!self::$instance instanceof self) {
-            self::$instance = new self($bussine_id,$service_id);
+            self::$instance = new self($bussine_id,$service_id,$request_helper);
         }
         return self::$instance;
     }
 
-    public function __construct($bussine_id,$service_id)
+    public function __construct($bussine_id,$service_id,$request_helper)
     {
         $this->service_id = $service_id;
         $this->bussine_id = $bussine_id;
         $this->asset_path = './data/'.$this->bussine_id;
+        $this->request_helper = $request_helper;
+    }
+    //返回请求对象
+    public function getRequestHelper()
+    {
+        return $this->request_helper;
     }
 
     //设在db对象
