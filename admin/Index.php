@@ -30,7 +30,8 @@ class Index extends AdminBase
         $status = true;
         $mess = '成功';
 
-        $model = new model\Admin();
+        $model = new model\Menu($this->service);
+        $navs = $model->getNav();
 
         $data = [
             'title'=>'hello admin!',
@@ -38,7 +39,8 @@ class Index extends AdminBase
             'pl_name'=>$req->request_plugin,
             'mod'=> $req->module,
             'act'=>$req->action,
-            'content'=>'this is the base template in admin plugins with model:'.$model->test(),
+            'navs' => $navs,
+            'content'=>'this is the base template in admin plugins with model:'.$model->str(),
         ];
 
         return $this->render($status,$mess,$data,'template','Index/t');

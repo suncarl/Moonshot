@@ -64,11 +64,11 @@
                 <div class="pull-left nav_lists">
                     <!-- 获取一级栏目菜单 -->
 
-                    <foreach name="top_menu" item="vo">
-                        <a class="btn btn-mid btn-{$vo.info}" href="{$vo.url}/" title="{$vo.name}" target="_self">
-                            <i class="fa fa-{$vo.icon}"> {$vo.name}</i>
+                    {% for key, value in navs %}
+                        <a class="btn btn-mid " href="#" title="{{ value.name }}" target="_self">
+                            <i class="fa fa-{{ value.icon }}"> {{ value.name }}</i>
                         </a>
-                    </foreach>
+                    {% endfor %}
 
                 </div>
 
@@ -111,7 +111,7 @@
                                 <img class="nav-user-photo" width="30" height="30" src="__TMPL__Public/assets/images/logo-18.png" alt="{$admin.user_login}">
                             </if>
 							<span class="user-info">
-								{:L('WELCOME_USER',array('username'=>empty($admin['user_nicename'])?$admin['user_login']:$admin['user_nicename']))}
+								<!--{:L('WELCOME_USER',array('username'=>empty($admin['user_nicename'])?$admin['user_login']:$admin['user_nicename']))}-->
 							</span>
                             <i class="fa fa-caret-down"></i>
                         </a>

@@ -73,5 +73,12 @@ CREATE TABLE `ng_sys_menu` (
   PRIMARY KEY (`id`),
   KEY `idx_name` (`name`),
   KEY `idx_app` (`app`),
-  KEY `idx_listorder` (`listorder`),
+  KEY `idx_listorder` (`listorder`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='后台管理菜单表';
+
+#insert datas
+insert into  `ng_sys_menu` (`id`, `parentid`, `app`, `model`, `action`, `data`, `placehold`, `type`,`link`, `status`, `name`, `icon`, `remark`, `listorder` ,`ctime`,`mtime`) VALUES
+(1,0,'admin','site','index','','',1,'',1,'网站管理','th','',30,1532693502,1532693502),
+(2,0,'admin','mini','index','','',1,'',1,'小程序管理','th','',25,1532693502,1532693502),
+(3,0,'admin','user','index','','',1,'',1,'用户管理','th','',20,1532693502,1532693502),
+(4,0,'admin','setting','index','','',1,'',1,'设置管理','th','',15,1532693502,1532693502);
