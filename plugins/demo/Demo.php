@@ -102,9 +102,9 @@ class Demo extends Plugins
 
     public function cacheAction($req)
     {
-        $this->service->getCache()->set('engine','moon_shot_'.time());
+        $this->service->getRedis()->set('engine','moon_shot_'.time());
 
-        $data = $this->service->getCache()->get('engine');;
+        $data = $this->service->getRedis()->get('engine');;
         $status = true;
         $mess = '成功';
         return new ResponeHelper($status,$mess,$data,'json');

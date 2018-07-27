@@ -25,18 +25,19 @@ class AdminBase extends Plugins
     // 2 初始化模版对象后
     public function initialize($level=0)
     {
+
         if($level==2){
-            $global_view_var = [
-                'site_title' => '插件管理平台',
-                'site_desc' => '插件,管理,平台,微信,小程序',
-                'site_style' => 'bluesky',
-                'root'=> 'xxx',
-            ];
-            //从配置文件中读取
-            $this->global_view_var = $global_view_var;
+            $cache_key = 'global_view_val';
+            $this->global_view_var = $this->service->getCache()->get($cache_key);
+
+            if (!$this->global_view_var) {
+                $model = new model\Menu($this->service);
+                $config_vals = $model->getConfig('sys_global');
+                $this->global_view_var = $config_vals;
+                $this->service->getCache()->set($cache_key,$config_vals,3600);
+            }
+
         }
-
-
     }
 
     public function render($status,$mess,$data,$type='json',$template='') {

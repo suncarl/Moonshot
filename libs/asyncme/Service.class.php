@@ -19,6 +19,8 @@ class Service
     private $db = null;
     //缓存对象
     private $cache = null;
+    //redis对象
+    private $redis = null;
     //资源目录
     private $asset_path;
     //实例对象
@@ -60,6 +62,16 @@ class Service
     public function getCache()
     {
         return $this->cache;
+    }
+    //设置redis对象
+    public function setRedis($redis_obj)
+    {
+        $this->redis = $redis_obj;
+    }
+    //获得redis
+    public function getRedis()
+    {
+        return $this->redis;
     }
 
     //返回带大B后缀的表名

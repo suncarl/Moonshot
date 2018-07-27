@@ -50,6 +50,11 @@ $container['redis'] = function ($c) {
     $redis->set('db_name','yazai_app_db');
     return $redis;
 };
+//文件缓存
+$container['filecache'] = function($c) {
+    $file_cache = new \libs\asyncme\NgFileCache('data/cache/file');
+    return $file_cache;
+};
 
 //cos中间件
 $container['cosClient'] = function ($c) {
@@ -61,6 +66,7 @@ $container['cosClient'] = function ($c) {
             'secretKey' => $config['secret_key'])));
     return $cosClient;
 };
+
 
 
 //通用头部中间件

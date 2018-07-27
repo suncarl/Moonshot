@@ -81,4 +81,18 @@ insert into  `ng_sys_menu` (`id`, `parentid`, `app`, `model`, `action`, `data`, 
 (1,0,'admin','site','index','','',1,'',1,'网站管理','th','',30,1532693502,1532693502),
 (2,0,'admin','mini','index','','',1,'',1,'小程序管理','th','',25,1532693502,1532693502),
 (3,0,'admin','user','index','','',1,'',1,'用户管理','th','',20,1532693502,1532693502),
-(4,0,'admin','setting','index','','',1,'',1,'设置管理','th','',15,1532693502,1532693502);
+(4,0,'admin','setting','index','','',1,'',1,'设置管理','th','',15,1532693502,1532693502),
+(5,0,'admin','plugins','index','','',1,'',1,'插件管理','th','',10,1532693502,1532693502);
+
+CREATE TABLE `ng_sys_config` (
+  `id` smallint(6) unsigned NOT NULL,
+  `name` varchar(50) NOT NULL COMMENT '名称',
+  `config` text NULL COMMENT '键值对,json格式',
+  `ctime` int(11) NOT NULL COMMENT '创建时间',
+  `mtime` int(11) NOT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uni_name` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='后台管理配置表';
+
+insert into `ng_sys_config` (`id`,`name`,`config`,`ctime`,`mtime`) VALUES
+(1,'sys_global','{\'site_title\':\'插件管理平台\',\'site_desc\':\'插件,管理,平台,微信,小程序\',\'site_style\':\'bluesky\'}',1532693502,1532693502)

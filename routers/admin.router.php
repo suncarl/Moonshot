@@ -39,8 +39,10 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
 
         if ( !$static_pl_service ) {
             $pl_service = Service::getInstance($asyRequest->compony_id,$asyRequest->service_id);
-            $pl_service->setCache($this->redis);
+            $pl_service->setCache($this->filecache);
+            $pl_service->setRedis($this->redis);
             $pl_service->setDb($this->db);
+
             $static_pl_service = $pl_service;
         }
 
