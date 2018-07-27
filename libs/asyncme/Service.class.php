@@ -21,6 +21,18 @@ class Service
     private $cache = null;
     //资源目录
     private $asset_path;
+    //实例对象
+    private static $instance;
+
+    //单例方法
+    static public function getInstance($bussine_id,$service_id)
+    {
+        //以后扩展支持多个db的识别，现在不操作
+        if (!self::$instance instanceof self) {
+            self::$instance = new self($bussine_id,$service_id);
+        }
+        return self::$instance;
+    }
 
     public function __construct($bussine_id,$service_id)
     {

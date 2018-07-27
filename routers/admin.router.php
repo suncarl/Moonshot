@@ -17,6 +17,7 @@ use libs\asyncme\Service;
 use libs\asyncme\ResponeHelper;
 
 
+
 //管理员是一个特殊的大B,管理插件
 //request : http://work.crab.com/wxapp/debug.php/sys/123/admin?mod=index&act=index
 $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Response $response, array $args) {
@@ -34,9 +35,18 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
             throw new InvaildException($plugin_class.' not invaild');
         }
 
-        $pl_service = new Service($asyRequest->compony_id,$asyRequest->service_id);
-        $pl_service->setCache($this->redis);
-        $pl_service->setDb($this->db);
+        static $static_pl_service;
+
+        if ( !$static_pl_service ) {
+            $pl_service = Service::getInstance($asyRequest->compony_id,$asyRequest->service_id);
+            $pl_service->setCache($this->redis);
+            $pl_service->setDb($this->db);
+            $static_pl_service = $pl_service;
+        }
+
+//        $pl_service = new Service($asyRequest->compony_id,$asyRequest->service_id);
+//        $pl_service->setCache($this->redis);
+//        $pl_service->setDb($this->db);
 
         $pl_class = $plugin_name.'\\'.$plugin_class;
 
