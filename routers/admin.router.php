@@ -25,7 +25,12 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
     $asyRequest = new RequestHelper($request);
 
     $plugin_name = strtolower($asyRequest->request_plugin);
-    $plugin_class = ucfirst($asyRequest->module);
+    $plugin_name_lists = explode("_",$plugin_name);
+    $plugin_class_data = [];
+    foreach ($plugin_name_lists as $plugin_name_item) {
+        $plugin_class_data[] = ucfirst($plugin_name_item);
+    }
+    $plugin_class = implode('',$plugin_class_data);
 
     $response_output = 'json';
     $response_data = '';
