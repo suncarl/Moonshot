@@ -31,6 +31,12 @@
 * use mysql as db
 * uploaded
 
+# 插件的命名规范
+* 插件目录名称为小写的英文字母（采用下划线分割单词的方式）
+* 插件类名与插件目录一致，（采用首字母大写的驼峰命名方式）
+* 插件的方法采用 名称+Action的方式，默认传递两个参数 $req 和 $preData , $req 为 RequestHelper的实例 而$preData 为 before方法执行后的数据结果，默认等同于 $req
+* 插件返回为 ResponeHelper的方法，返回默认为json格式
+
 # 模版 useage
 * 模版变量连接符合 ～
 ```
