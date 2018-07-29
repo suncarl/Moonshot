@@ -20,6 +20,9 @@
 * manager
 * privileges
 * miniprogram
+* 调用插件
+* 验证码
+* url生成
 
 
 # done

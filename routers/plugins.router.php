@@ -22,7 +22,12 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
 
 
     $plugin_name = strtolower($asyRequest->request_plugin);
-    $plugin_class = ucfirst($asyRequest->request_plugin);
+    $plugin_name_lists = explode("_",$plugin_name);
+    $plugin_class_data = [];
+    foreach ($plugin_name_lists as $plugin_name_item) {
+        $plugin_class_data[] = ucfirst($plugin_name_item);
+    }
+    $plugin_class = implode('',$plugin_class_data);
 
     $response_output = 'json';
     $response_data = '';
@@ -32,7 +37,7 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
             throw new InvaildException($plugin_class.' not invaild');
         }
 
-        $pl_service = new Service($asyRequest->compony_id,$asyRequest->service_id);
+        $pl_service = new Service($asyRequest->compony_id,$asyRequest->service_id,$asyRequest);
         $pl_service->setCache($this->redis);
         $pl_service->setDb($this->db);
 
@@ -61,6 +66,8 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
             return $response->withJson($json_data);
         case 'html' :
             return $response->getBody()->write($response_data);
+        case 'captcha' :
+            return $response->withHeader('Content-Type','image/jpeg')->write($response_data->output());
         case 'redirect' :
             return $response->withRedirect($response_data,301);
         default :
