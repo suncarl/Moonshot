@@ -28,8 +28,6 @@ if (APPLICATION_ENV === 'debug') {
 }
 define('NG_ROOT',dirname(dirname(__FILE__)));
 
-session_cache_limiter(false);
-session_start();
 
 $config = include NG_ROOT.'/config/config.debug.inc.php';
 
@@ -94,5 +92,9 @@ if ( $routers ) {
     }
 }
 
-
+$app->add(new \Slim\Middleware\Session([
+    'name' => 'dummy_session',
+    'autorefresh' => true,
+    'lifetime' => '1 hour'
+]));
 $app->run();

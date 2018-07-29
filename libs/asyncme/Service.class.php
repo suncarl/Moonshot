@@ -20,6 +20,8 @@ class Service
     //缓存对象
     private $cache = null;
     //redis对象
+    private $session = null;
+    //redis对象
     private $redis = null;
     //资源目录
     private $asset_path;
@@ -60,6 +62,16 @@ class Service
     public function getDb()
     {
         return $this->db;
+    }
+    //设在session对象
+    public function setSession($session)
+    {
+        $this->session = $session;
+    }
+    //获得session
+    public function getSession()
+    {
+        return $this->session;
     }
     //设置缓存对象
     public function setCache($cache_obj)

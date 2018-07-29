@@ -27,7 +27,8 @@ class VerificationCode extends Plugins
         $type = 'captcha';
 
         $auth_name = $req->query_datas['auth'] ? $req->query_datas['auth'] : 'vcode';
-        $_SESSION[$auth_name] = $builder->getPhrase();
+
+        $this->service->getSession()->set($auth_name,$builder->getPhrase());
 
         return new ResponeHelper($status,$mess,$data,$type);
     }

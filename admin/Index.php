@@ -41,6 +41,7 @@ class Index extends PermissionBase
             'mod'=> $req->module,
             'act'=>$req->action,
             'navs' => $navs,
+            'session'=>$this->service->getSession()->get('vcode'),
             'content'=>'this is the base template in admin plugins with model:'.$model->str(),
         ];
 

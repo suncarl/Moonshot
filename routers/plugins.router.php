@@ -38,7 +38,9 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
         }
 
         $pl_service = new Service($asyRequest->compony_id,$asyRequest->service_id,$asyRequest);
-        $pl_service->setCache($this->redis);
+        $pl_service->setSession($this->session);
+        $pl_service->setCache($this->filecache);
+        $pl_service->setRedis($this->redis);
         $pl_service->setDb($this->db);
 
 

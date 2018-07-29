@@ -56,6 +56,11 @@ $container['filecache'] = function($c) {
     return $file_cache;
 };
 
+//session处理
+$container['session'] = function ($c) {
+    return new \SlimSession\Helper;
+};
+
 //cos中间件
 $container['cosClient'] = function ($c) {
     $config = $c['settings']['cosClient'];
@@ -79,3 +84,4 @@ $common_header_mw = function ($request, $response, $next ) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         ->withHeader('Content-type', 'application/json');
 };
+
