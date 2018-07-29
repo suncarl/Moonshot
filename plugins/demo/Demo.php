@@ -18,7 +18,7 @@ class Demo extends Plugins
 {
 
 
-    public function IndexAction($req,$preData)
+    public function IndexAction(RequestHelper $req,array $preData)
     {
         $status = true;
         $mess = '成功';
@@ -30,7 +30,7 @@ class Demo extends Plugins
         return new ResponeHelper($status,$mess,$data);
     }
 
-    public function htmlAction($req,$preData)
+    public function htmlAction(RequestHelper $req,array $preData)
     {
         $status = true;
         $mess = '成功';
@@ -47,7 +47,7 @@ class Demo extends Plugins
         return new ResponeHelper($status,$mess,$data,'redirect');
     }
 
-    public function uploadAction($req)
+    public function uploadAction(RequestHelper $req)
     {
         $asset_path = $this->service->getAssetPath();
         if(!is_dir($asset_path.'/')) {
@@ -89,7 +89,7 @@ class Demo extends Plugins
 
     }
 
-    public function findAction($req)
+    public function findAction(RequestHelper $req)
     {
 
         $map = [];
@@ -100,7 +100,7 @@ class Demo extends Plugins
         return new ResponeHelper($status,$mess,$data,'json');
     }
 
-    public function cacheAction($req)
+    public function cacheAction(RequestHelper $req)
     {
         $this->service->getRedis()->set('engine','moon_shot_'.time());
 

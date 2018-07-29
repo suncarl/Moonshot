@@ -10,10 +10,11 @@ namespace admin;
 
 use libs\asyncme\Plugins;
 use admin\model;
+use libs\asyncme\RequestHelper;
 
 class Index extends PermissionBase
 {
-    public function IndexAction($req,$preData)
+    public function IndexAction(RequestHelper $req,array $preData)
     {
         $status = true;
         $mess = '成功';
@@ -25,7 +26,7 @@ class Index extends PermissionBase
         return $this->render($status,$mess,$data);
     }
 
-    public function tAction($req,$preData)
+    public function tAction(RequestHelper $req,array $preData)
     {
         $status = true;
         $mess = '成功';
@@ -46,7 +47,7 @@ class Index extends PermissionBase
         return $this->render($status,$mess,$data,'template','Index/t');
     }
 
-    public function codeAction($req,$preData)
+    public function codeAction(RequestHelper $req,array $preData)
     {
         $plugin_req = $req;
         $plugin_req->request_plugin = 'verification_code';
@@ -56,13 +57,13 @@ class Index extends PermissionBase
         return $plugin_reponse;
     }
 
-    public function urlAction($req,$preData)
+    public function urlAction(RequestHelper $req,array $preData)
     {
 
 
         $path = [
             'mark' => 'plugin',
-            'bid'  => 1232,
+            'bid'  => $req->compony_id,
             'pl_name'=>'verification_code',
         ];
         $query = [

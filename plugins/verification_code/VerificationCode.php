@@ -16,7 +16,7 @@ use Gregwar\Captcha\CaptchaBuilder;
 
 class VerificationCode extends Plugins
 {
-    public function genAction($req,$preData)
+    public function genAction(RequestHelper $req,array $preData)
     {
         $builder = new CaptchaBuilder;
         $builder->build();
@@ -25,6 +25,9 @@ class VerificationCode extends Plugins
         $mess = '成功';
         $data = $builder;
         $type = 'captcha';
+
+        $auth_name = $req->query_datas['auth'] ? $req->query_datas['auth'] : 'vcode';
+        $_SESSION[$auth_name] = $builder->getPhrase();
 
         return new ResponeHelper($status,$mess,$data,$type);
     }

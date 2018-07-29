@@ -17,22 +17,29 @@ class PermissionBase extends AdminBase
 {
     public function auth()
     {
-        $request = $this->service->getRequestHelper();
-        $router = $request->router;
-        $bid = $request->compony_id;
-        $pl_name = $request->request_plugin;
-        $url = "http://work.crab.com/wxapp/debug.php/sys/123/admin?mod=public&act=login";
-        //$url = $router->pathFor('sys',['bid'=>$bid,'pl_name'=>$pl_name],["mod"=>'public','act'=>'login']);
+        $req = $this->service->getRequestHelper();
+        $bid = $req->compony_id;
 
+        $path = [
+            'mark' => 'sys',
+            'bid'  => $bid,
+            'pl_name'=>'public',
+        ];
+        $query = [
+            'act'=>'login'
+        ];
+
+        $url = urlGen($req,$path,$query);
         $time = 0;
+        $mess = '';
+
         $status = true;
         return [
             'status'=>$status,
+            'mess'=>$mess,
             'url'=>$url,
             'time'=>$time,
         ];
-
-
 
     }
 }
