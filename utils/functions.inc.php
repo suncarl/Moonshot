@@ -181,7 +181,11 @@ function getUserAgent()
 }
 
 /**
- * 调用插件
+ * 插件点用方法
+ * @param $asyRequest
+ * @param $pl_service
+ * @param array $custom
+ * @return mixed
  */
 function callPlugin($asyRequest,$pl_service,$custom=[]){
     $plugin_name = strtolower($asyRequest->request_plugin);
@@ -212,4 +216,45 @@ function callPlugin($asyRequest,$pl_service,$custom=[]){
         die();
     }
     return $pl_respone;
+}
+
+/**
+ * URL生成
+ * @param $req
+ * @param $path
+ * @param array $query
+ * @param bool $no_host
+ * @return string
+ */
+function urlGen($req,$path,$query=[],$no_host=false)
+{
+    if($req) {
+        //REQUEST_SCHEME
+        $serverParams = $req->getServerParams();
+        $host = $serverParams['HTTP_HOST'];
+        $port = $serverParams['SERVER_PORT']=='80'? '' : ':'.$serverParams['SERVER_PORT'];
+        $request_scheme = $serverParams['REQUEST_SCHEME'];
+        $script_name = $serverParams['SCRIPT_NAME'];
+
+        if (is_array($path)) {
+            $path = implode('/',array_values($path));
+        }
+        if ($path && is_string($path)  && $path[0]!='/') {
+            $path = '/'.$path;
+        }
+        if (is_array($query)) {
+            $querys = [];
+            foreach ($query as $k=>$v) {
+                $querys[] = $k.'='.urlencode($v);
+            }
+            $query = implode('&',$querys);
+        }
+        if ($query && is_string($query) && $query[0]!='?') {
+            $query = '?'.$query;
+        }
+        $res_host = $no_host ? $request_scheme.'://'.$host.$port : '';
+        return $res_host.''.$script_name.''.$path.''.$query;
+
+    }
+
 }

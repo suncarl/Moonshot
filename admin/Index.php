@@ -55,4 +55,26 @@ class Index extends PermissionBase
         $plugin_reponse = callPlugin($plugin_req,$this->service);
         return $plugin_reponse;
     }
+
+    public function urlAction($req,$preData)
+    {
+
+
+        $path = [
+            'mark' => 'plugin',
+            'bid'  => 1232,
+            'pl_name'=>'verification_code',
+        ];
+        $query = [
+            'act'=>'gen'
+        ];
+        $url = urlGen($req,$path,$query,true);
+
+        $status = true;
+        $mess = '成功';
+        $data = [
+            'url' => $url,
+        ];
+        return $this->render($status,$mess,$data);
+    }
 }

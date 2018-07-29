@@ -42,6 +42,9 @@ class RequestHelper
     //输出格式
     public $output = 'json';
 
+    //
+    protected  $originalRequest;
+
 
     public function __construct(Request $request)
     {
@@ -97,6 +100,8 @@ class RequestHelper
 
         $this->upload_files = $request->getUploadedFiles();
 
+        $this->originalRequest = $request;
+
     }
 
     public function build_json_data($status,$desc,$data=[])
@@ -113,5 +118,13 @@ class RequestHelper
         }
     }
 
+    public function getServerParams()
+    {
+        if($this->originalRequest) {
+            return $this->originalRequest->getServerParams();
+        } else {
+            return [];
+        }
+    }
 
 }
