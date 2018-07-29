@@ -25,7 +25,8 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
     $asyRequest = new RequestHelper($request);
 
     $plugin_name = strtolower($asyRequest->request_plugin);
-    $plugin_name_lists = explode("_",$plugin_name);
+    $plugin_classes = strtolower($asyRequest->module);
+    $plugin_name_lists = explode("_",$plugin_classes);
     $plugin_class_data = [];
     foreach ($plugin_name_lists as $plugin_name_item) {
         $plugin_class_data[] = ucfirst($plugin_name_item);
@@ -84,6 +85,8 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
             return $response->getBody()->write($response_data);
         case 'redirect' :
             return $response->withRedirect($response_data,301);
+        case 'captcha' :
+            return $response->withHeader('Content-Type','image/jpeg')->write($response_data->output());
         case 'template' :
             return $this->admin_view->render($response,$response_template,$response_data);
         default :

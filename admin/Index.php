@@ -45,4 +45,14 @@ class Index extends PermissionBase
 
         return $this->render($status,$mess,$data,'template','Index/t');
     }
+
+    public function codeAction($req,$preData)
+    {
+        $plugin_req = $req;
+        $plugin_req->request_plugin = 'verification_code';
+        $plugin_req->action = 'gen';
+
+        $plugin_reponse = callPlugin($plugin_req,$this->service);
+        return $plugin_reponse;
+    }
 }

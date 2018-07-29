@@ -51,6 +51,7 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
         if ($pl_respone) {
             $response_output = $pl_respone->getType();
             $response_data = $pl_respone->getData();
+            $response_template = $pl_respone->getTemplate();
             $json_data = $asyRequest->build_json_data($pl_respone->getStatus(),$pl_respone->getMessage(),$pl_respone->getData());
         } else {
             $json_data = $asyRequest->build_json_data(false,'nothing');
@@ -66,10 +67,12 @@ $app->any('/plugin/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Res
             return $response->withJson($json_data);
         case 'html' :
             return $response->getBody()->write($response_data);
-        case 'captcha' :
-            return $response->withHeader('Content-Type','image/jpeg')->write($response_data->output());
         case 'redirect' :
             return $response->withRedirect($response_data,301);
+        case 'captcha' :
+            return $response->withHeader('Content-Type','image/jpeg')->write($response_data->output());
+        case 'template' :
+            return $this->admin_view->render($response,$response_template,$response_data);
         default :
             return $response->withJson($json_data);
     }

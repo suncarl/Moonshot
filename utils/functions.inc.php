@@ -179,3 +179,37 @@ function getUserAgent()
     $agent = $_SERVER['HTTP_USER_AGENT'];
     return $agent;
 }
+
+/**
+ * 调用插件
+ */
+function callPlugin($asyRequest,$pl_service,$custom=[]){
+    $plugin_name = strtolower($asyRequest->request_plugin);
+    $plugin_name_lists = explode("_",$plugin_name);
+    $plugin_class_data = [];
+    foreach ($plugin_name_lists as $plugin_name_item) {
+        $plugin_class_data[] = ucfirst($plugin_name_item);
+    }
+    $plugin_class = implode('',$plugin_class_data);
+
+
+    try {
+
+        if (!file_exists(NG_ROOT.'/plugins/'.$plugin_name.'/'.$plugin_class.'.php')) {
+            throw new Exception("plugins calling :".$plugin_class.' and not invaild');
+        }
+
+        $pl_class = 'plugins\\'.$plugin_name.'\\'.$plugin_class;
+        if (!class_exists($pl_class)) {
+            throw new Exception("plugins class  :".$pl_class.'  not exist');
+        }
+        $pl = new $pl_class(NG_ROOT.'/plugins/'.$plugin_name.'/');
+        $pl->setService($pl_service);
+        $pl_respone = $pl->run($asyRequest);
+
+    } catch (Exception $e){
+        echo $e->getMessage();
+        die();
+    }
+    return $pl_respone;
+}
