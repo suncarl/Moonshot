@@ -24,9 +24,15 @@ class PermissionBase extends AdminBase
         $url = "http://work.crab.com/wxapp/debug.php/sys/123/admin?mod=public&act=login";
         //$url = $router->pathFor('sys',['bid'=>$bid,'pl_name'=>$pl_name],["mod"=>'public','act'=>'login']);
 
+        $time = 0;
+        $status = true;
+        return [
+            'status'=>$status,
+            'url'=>$url,
+            'time'=>$time,
+        ];
 
 
-        $this->redirect($url);
 
     }
 }

@@ -36,7 +36,12 @@ class AdminBase extends Plugins
                 $this->service->getCache()->set($cache_key,$config_vals,3600);
             }
             if(method_exists($this,'auth')) {
-                return $this->auth();
+                $auth_reponse = $this->auth();
+                if ($auth_reponse['status'] == false) {
+                    //欠缺时间部分
+                    $this->redirect($auth_reponse['url']);
+                }
+
             }
         }
     }
