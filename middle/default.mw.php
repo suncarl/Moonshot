@@ -61,6 +61,7 @@ $container['session'] = function ($c) {
     return new \SlimSession\Helper;
 };
 
+
 //cos中间件
 $container['cosClient'] = function ($c) {
     $config = $c['settings']['cosClient'];

@@ -63,7 +63,7 @@ class Service
     {
         return $this->db;
     }
-    //设在session对象
+    //设置session对象
     public function setSession($session)
     {
         $this->session = $session;
