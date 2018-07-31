@@ -49,6 +49,11 @@
                     <input class="input" type="text" name="verify" placeholder="验证码" />
                 </li>
             </ul>
+            {% if error_code !=0 %}
+            <div>
+                <span style="width: 100%;font-size: 14px;color: red;text-align: center;display: block;margin: 10px 0px;"> {{ error }} </span>
+            </div>
+            {% endif %}
             <div id="login_btn_wraper">
                 <button type="submit" name="submit" class="btn js-ajax-submit" data-loadingmsg="登陆">登陆</button>
             </div>

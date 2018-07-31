@@ -23,7 +23,7 @@ class VerificationCode extends Plugins
         $cheight = $req->query_datas['h'];
         $cheight = $cheight ? $cheight : '';
         $builder = new CaptchaBuilder;
-        $builder->buildAgainstOCR($cwidth,$cheight);
+        $builder->build($cwidth,$cheight);
 
         $status = true;
         $mess = '成功';

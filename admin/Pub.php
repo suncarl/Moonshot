@@ -29,17 +29,18 @@ class Pub extends AdminBase
 
     public function loginAction(RequestHelper $req,array $preData)
     {
-        $bid = $req->compony_id;
-        $path = [
-            'mark' => 'sys',
-            'bid'  => $bid,
-            'pl_name'=>'pub',
-        ];
-        $query = [
-            'act'=>'doLogin'
-        ];
-
-        $form_url = urlGen($req,$path,$query);
+//        $bid = $req->compony_id;
+//        $path = [
+//            'mark' => 'sys',
+//            'bid'  => $bid,
+//            'pl_name'=>'admin',
+//        ];
+//        $query = [
+//            'mod'=>'pub',
+//            'act'=>'doLogin'
+//        ];
+//
+//        $form_url = urlGen($req,$path,$query);
 
         $path = [
             'mark' => 'plugin',
@@ -53,14 +54,40 @@ class Pub extends AdminBase
         ];
         $vcode_url = urlGen($req,$path,$query,true);
 
+        $error_code = 0;
+        $error = '';
+        if ($req->request_method=='POST') {
+
+            $post_datas = $req->post_datas;
+            $session_code = $this->service->getSession()->get($req->compony_id.'_vcode');
+
+            if ($post_datas['verify']!=$session_code) {
+                $error_code = 1005;
+                $error = '验证码错误';
+            } else if (!$post_datas['username']) {
+                $error_code = 1001;
+                $error = '用户名不为空';
+            } else if (strlen($post_datas['username'])>16) {
+                $error_code = 1002;
+                $error = '用户名格式错误';
+            } else if (!$post_datas['password']) {
+                $error_code = 1003;
+                $error = '密码不为空';
+            }
+            
+
+        }
+
         $status = true;
         $mess = '成功';
         $cookie_val = Cookie::exists('admin_user');
 
         $data = [
             'default_user'=>$cookie_val,
-            'form_url' =>$form_url,
-            'vcode_url'=>$vcode_url
+            'form_url' =>'#',
+            'vcode_url'=>$vcode_url,
+            'error_code'=>$error_code,
+            'error'=>$error,
         ];
 
         return $this->render($status,$mess,$data,'template','login');
@@ -68,7 +95,9 @@ class Pub extends AdminBase
 
     public function doLoginAction(RequestHelper $req,array $preData)
     {
-        var_dump($req->request_method());
+        if ($req->request_method=='POST') {
+
+        }
     }
 
 
