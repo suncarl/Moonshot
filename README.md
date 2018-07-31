@@ -62,6 +62,8 @@ result:
 
 
 # docs
+* twig文档 https://www.kancloud.cn/yunye/twig-cn/159454
+* slim文档 https://www.slimframework.com/docs/v3/start/installation.html
 * 包裹查找 https://packagist.org/
 * 图形验证码 https://github.com/gregwar/captcha
 * slim-session https://github.com/bryanjhv/slim-session
