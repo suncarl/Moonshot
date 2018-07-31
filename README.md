@@ -65,6 +65,7 @@ result:
 * 包裹查找 https://packagist.org/
 * 图形验证码 https://github.com/gregwar/captcha
 * slim-session https://github.com/bryanjhv/slim-session
+* cookie https://github.com/delight-im/PHP-Cookie
 
 
 

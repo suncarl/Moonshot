@@ -23,7 +23,7 @@ class PermissionBase extends AdminBase
         $path = [
             'mark' => 'sys',
             'bid'  => $bid,
-            'pl_name'=>'public',
+            'pl_name'=>'pub',
         ];
         $query = [
             'act'=>'login'
