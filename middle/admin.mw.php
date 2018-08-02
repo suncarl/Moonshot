@@ -27,7 +27,7 @@ $container['admin_view'] = function ($container) {
     return $view;
 };
 
-
+//验证管理用户
 $vaild_admin_mw = function( $request, $response, $next ) {
     $route = $request->getAttribute('route');
     $bid = $route->getArgument('bid');
@@ -39,7 +39,7 @@ $vaild_admin_mw = function( $request, $response, $next ) {
         if(!is_dir($cachePath.'/')) {
             mkdir($cachePath.'/',0755,true);
         }
-        $cache_file = md5($bid).".cache.php";
+        $cache_file = 'admin_'.md5($bid).".cache.php";
         if (file_exists($cachePath.'/'.$cache_file) && time()-filemtime($cachePath.'/'.$cache_file) < 5*60) {
             $cache = include $cachePath.'/'.$cache_file;
             if ($cache['status']==1 && $cache['company_id']==$bid) {
