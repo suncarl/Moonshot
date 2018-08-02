@@ -59,4 +59,45 @@ class AdminBase extends Plugins
         }
         return new ResponeHelper($status,$mess,$data,$type,$template);
     }
+
+
+    public function nav_default(RequestHelper $req,array $preData)
+    {
+        $model = new model\Menu($this->service);
+        $navs = $model->getNav();
+
+        if ($navs) {
+            foreach ($navs as $key=>$val) {
+                $navs[$key]['active'] = '';
+                if ($val['app']==$req->request_plugin && $val['model']==$req->module && $val['action']==$req->action) {
+                    //是否加入数据检查
+                    $navs[$key]['active'] = 'nav_active';
+                }
+            }
+        }
+        
+
+        $path = [
+            'mark' => 'sys',
+            'bid'  => $req->compony_id,
+            'pl_name'=>'admin',
+        ];
+        $query = [
+            'mod'=>'index',
+            'act'=>'info'
+        ];
+        $default_frame_url = urlGen($req,$path,$query,true);
+
+        $data = [
+            'bid'=>$req->compony_id,
+            'pl_name'=>$req->request_plugin,
+            'mod'=> $req->module,
+            'act'=>$req->action,
+            'navs' => $navs,
+            'sessions'=>$this->sessions,
+            'default_frame_url'=>$default_frame_url,
+        ];
+        return $data;
+
+    }
 }
