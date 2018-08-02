@@ -48,6 +48,14 @@ CREATE TABLE `ng_sys_admin_account` (
 # insert into `ng_sys_admin_account` (`company_id`,`account`,`avatar`,`password`,`slat`,`nickname`,`expire_time`,`status`,`ctime`,`mtime`)
 VALUES (123,'admin','default','57395bc5b73f0e880830285482f716f5','tq8smr','管理员',0,1,1533183790,1533183790)
 
+CREATE TABLE `ng_sys_admin_account_faillog` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `admin_uid` int(10) unsigned NOT NULL COMMENT '管理用户id',
+  `try_count` int(10) unsigned NOT NULL COMMENT '尝试次数',
+  `mtime` int(11) NOT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_admin_uid` (`admin_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统管理员登陆错误表';
 
 CREATE TABLE `ng_sys_logs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

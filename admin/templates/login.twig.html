@@ -54,6 +54,11 @@
                 <span style="width: 100%;font-size: 14px;color: red;text-align: center;display: block;margin: 10px 0px;"> {{ error }} </span>
             </div>
             {% endif %}
+            {% if admin_user_fail >= 3 %}
+            <div>
+                <span style="width: 100%;font-size: 14px;color: red;text-align: center;display: block;margin: 10px 0px;"> 您还可以参数 {{ allow_try - admin_user_fail }} </span>
+            </div>
+            {% endif %}
             <div id="login_btn_wraper">
                 <button type="submit" name="submit" class="btn js-ajax-submit" data-loadingmsg="登陆">登陆</button>
             </div>

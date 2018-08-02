@@ -39,4 +39,41 @@ class Account extends AdminModel
         return $check_pass==$sys_pass;
     }
 
+    /**
+     * 获得登陆失败次数
+     * @param $admin_uid
+     * @return int
+     */
+    public function getFailLogin($admin_uid)
+    {
+        $map = [
+            'company_id'=> $admin_uid,
+        ];
+        $res = $this->db->table('sys_admin_account_faillog')->select('try_count')->where($map)->first();
+        $res = (array)$res;
+        $try_count = 0;
+        if ($res) {
+            $try_count = $res['try_count'];
+        }
+        return $try_count;
+    }
+
+    /**
+     * 更新登陆失败次数
+     * @param $admin_uid
+     * @param string $type
+     */
+    public function updateFailLogin($admin_uid,$type='inc')
+    {
+        $map = [
+            'company_id'=> $admin_uid,
+        ];
+        $obj = $this->db->table('sys_admin_account_faillog');
+        if($type=='destory') {
+            $obj->where($map)->delete();
+        } else if($type == 'inc') {
+            $obj->where($map)->increment('try_count');
+        }
+    }
+
 }
