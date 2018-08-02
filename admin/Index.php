@@ -19,7 +19,7 @@ class Index extends PermissionBase
         $status = true;
         $mess = '成功';
         $data = [
-            'test'=>'hell admin!',
+            'test'=>'hello admin!',
             'req'=>$req,
         ];
 
@@ -34,6 +34,12 @@ class Index extends PermissionBase
         $model = new model\Menu($this->service);
         $navs = $model->getNav();
 
+        $session = $this->service->getSession();
+        $sessions['admin_user'] = $session->get('admin_user');
+        $sessions['admin_name'] = $session->get('admin_name');
+        $sessions['admin_avator'] = $session->get('admin_avator');
+        $sessions['admin_login_time'] = $session->get('admin_login_time');
+
         $data = [
             'title'=>'hello admin!',
             'bid'=>$req->compony_id,
@@ -41,7 +47,7 @@ class Index extends PermissionBase
             'mod'=> $req->module,
             'act'=>$req->action,
             'navs' => $navs,
-            'session'=>$this->service->getSession()->get('vcode'),
+            'sessions'=>$sessions,
             'content'=>'this is the base template in admin plugins with model:'.$model->str(),
         ];
 

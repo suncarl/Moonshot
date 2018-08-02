@@ -23,9 +23,10 @@ class PermissionBase extends AdminBase
         $path = [
             'mark' => 'sys',
             'bid'  => $bid,
-            'pl_name'=>'pub',
+            'pl_name'=>'admin',
         ];
         $query = [
+            'mod'=>'pub',
             'act'=>'login'
         ];
 
@@ -33,7 +34,8 @@ class PermissionBase extends AdminBase
         $time = 0;
         $mess = '';
 
-        $status = true;
+        $session = $this->service->getSession();
+        $status = $session->get('admin_user') ? true : false;
         return [
             'status'=>$status,
             'mess'=>$mess,
