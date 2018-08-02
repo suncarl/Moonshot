@@ -13,6 +13,7 @@ use libs\asyncme\RequestHelper as RequestHelper;
 use libs\asyncme\ResponeHelper as ResponeHelper;
 use \Slim\Http\UploadedFile;
 
+include NG_ROOT.'/admin/utils/common_func.php';
 
 class AdminBase extends Plugins
 {
