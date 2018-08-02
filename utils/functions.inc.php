@@ -7,9 +7,6 @@
  */
 if(!defined('NG_ME')) die();
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Container\Container;
-use Illuminate\Events\Dispatcher;
 
 /**
  * json数据封装

@@ -5,7 +5,9 @@
  * Date: 2018/8/2
  * Time: 下午11:41
  */
-
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Container\Container;
+use Illuminate\Events\Dispatcher;
 /**
  * 检查是否具备功能权限
  * @param $bid
@@ -24,7 +26,7 @@ function ng_func_privilege_check($bid,$admin_uid,$op)
         'admin_uid'=>$admin_uid,
     ];
 
-    $cachePath = "./data/cache/privs";
+    $cachePath = NG_ROOT."/public/data/cache/privs";
     if(!is_dir($cachePath.'/')) {
         mkdir($cachePath.'/',0755,true);
     }
