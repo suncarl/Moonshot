@@ -95,4 +95,4 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
     }
 
 
-})->setName('sys');
+})->add($vaild_admin_mw)->setName('sys');

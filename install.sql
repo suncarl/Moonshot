@@ -27,9 +27,33 @@ CREATE TABLE `ng_sys_plugins_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件引用关系表';
 
 
+CREATE TABLE `ng_sys_admin_account` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `company_id` int(10) unsigned NOT NULL COMMENT '商业id',
+  `account` varchar(255) NOT NULL COMMENT '账号',
+  `avatar` varchar(255) NOT NULL COMMENT '头像',
+  `password` varchar(255) NOT NULL COMMENT '密码',
+  `slat` varchar(10) NULL COMMENT '随机密码',
+  `nickname` varchar(150) NOT NULL COMMENT '名称',
+  `expire_time` int(11) NOT NULL COMMENT '有效时间',
+  `status` tinyint(1) unsigned DEFAULT 1 NULL COMMENT '状态 0:关闭;1:打开',
+  `ctime` int(11) NOT NULL COMMENT '创建时间',
+  `mtime` int(11) NOT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_account` (`account`),
+  KEY `idx_company_id` (`company_id`),
+  KEY `idx_nickname` (`nickname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统管理员表';
+
+# insert into `ng_sys_admin_account` (`company_id`,`account`,`avatar`,`password`,`slat`,`nickname`,`expire_time`,`status`,`ctime`,`mtime`)
+VALUES (123,'admin','default','57395bc5b73f0e880830285482f716f5','tq8smr','管理员',0,1,1533183790,1533183790)
+
+
 CREATE TABLE `ng_sys_company_account` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `account` varchar(255) NOT NULL COMMENT '账号',
+  `group_id` int(10) unsigned NOT NULL COMMENT '商业id',
+  `group_type` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '0:主账号,1:子账号',
   `avatar` varchar(255) NOT NULL COMMENT '账号',
   `password` varchar(255) NOT NULL COMMENT '密码',
   `nickname` varchar(150) NOT NULL COMMENT '名称',
@@ -48,6 +72,7 @@ CREATE TABLE `ng_sys_company_account` (
   `mtime` int(11) NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`),
   KEY `idx_account` (`account`),
+  KEY `idx_group_id` (`group_id`),
   KEY `idx_hash_val` (`hash_val`),
   KEY `idx_nickname` (`nickname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='企业账号信息表';

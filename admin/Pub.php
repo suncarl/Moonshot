@@ -74,7 +74,7 @@ class Pub extends AdminBase
                 $error_code = 1003;
                 $error = '密码不为空';
             }
-            
+
 
         }
 
