@@ -29,18 +29,6 @@ class Pub extends AdminBase
 
     public function loginAction(RequestHelper $req,array $preData)
     {
-//        $bid = $req->compony_id;
-//        $path = [
-//            'mark' => 'sys',
-//            'bid'  => $bid,
-//            'pl_name'=>'admin',
-//        ];
-//        $query = [
-//            'mod'=>'pub',
-//            'act'=>'doLogin'
-//        ];
-//
-//        $form_url = urlGen($req,$path,$query);
 
         $path = [
             'mark' => 'plugin',
@@ -74,7 +62,72 @@ class Pub extends AdminBase
                 $error_code = 1003;
                 $error = '密码不为空';
             }
+            $admin_account = new model\Account($this->service);
+            $admin_res = $admin_account->getAdminWithName($req->compony_id,$post_datas['username']);
+            if($admin_res && $admin_res['status']==1) {
+                $flag = $admin_account->checkPass($post_datas['password'],$admin_res['password'],$admin_res['slat']);
+                if (!$flag) {
+                    $error_code = 1011;
+                    $error = '密码错误';
+                } else {
+                    //设定session
+                    $cookie = new Cookie('admin_user');
+                    $cookie->setValue($admin_res['account']);
+                    $cookie->setMaxAge(60 * 60 * 24);
+                    $cookie->save();
 
+                    $session = $this->service->getSession();
+                    $session->set('admin_user',$admin_res['account']);
+                    $session->set('admin_name',$admin_res['nickname']);
+                    $session->set('admin_avator',$admin_res['avator']);
+                    $session->set('admin_login_time',time());
+
+                    $logInfo = [
+                        'ip'=>getIP(),
+                        'user_id'=>$admin_res['id'],
+                        'account'=>$admin_res['account'],
+                        'nickname'=>$admin_res['nickname'],
+                        'mess'=>'登陆成功',
+                        'flag'=>true,
+                    ];
+
+                    $admin_account->sysLog($req->compony_id,$logInfo,'pub/login');
+
+                    $bid = $req->compony_id;
+                    $path = [
+                        'mark' => 'sys',
+                        'bid'  => $bid,
+                        'pl_name'=>'admin',
+                    ];
+                    $query = [
+                        'mod'=>'index',
+                        'act'=>'index'
+                    ];
+                    $sys_url = urlGen($req,$path,$query);
+
+                    $this->redirect($sys_url);
+
+                }
+            } else {
+                $error_code = 1010;
+                $error = '管理用户不存在';
+            }
+
+        }
+
+        //
+        if($error_code>0 && $error_code!=1005) {
+            //验证码错误不登记
+            if ($post_datas['username']) {
+                $logInfo = [
+                    'ip'=>getIP(),
+                    'account'=>$post_datas['username'],
+                    'password'=>$post_datas['password'],
+                    'mess'=>'登陆失败',
+                    'flag'=>false,
+                ];
+                $admin_account->sysLog($req->compony_id,$logInfo,'pub/login');
+            }
 
         }
 

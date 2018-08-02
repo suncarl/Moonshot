@@ -14,7 +14,7 @@ use libs\asyncme\RequestHelper;
 
 class Index extends PermissionBase
 {
-    public function IndexAction(RequestHelper $req,array $preData)
+    public function tAction(RequestHelper $req,array $preData)
     {
         $status = true;
         $mess = '成功';
@@ -26,7 +26,7 @@ class Index extends PermissionBase
         return $this->render($status,$mess,$data);
     }
 
-    public function tAction(RequestHelper $req,array $preData)
+    public function indexAction(RequestHelper $req,array $preData)
     {
         $status = true;
         $mess = '成功';
@@ -45,7 +45,7 @@ class Index extends PermissionBase
             'content'=>'this is the base template in admin plugins with model:'.$model->str(),
         ];
 
-        return $this->render($status,$mess,$data,'template','Index/t');
+        return $this->render($status,$mess,$data,'template','Index/index');
     }
 
     public function codeAction(RequestHelper $req,array $preData)

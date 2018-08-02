@@ -9,6 +9,8 @@
 namespace admin\model;
 
 
+use libs\asyncme\Service;
+
 class AdminModel
 {
     public $service = null;
@@ -19,7 +21,7 @@ class AdminModel
 
     public $redis = null;
 
-    public function __construct($service)
+    public function __construct(Service $service)
     {
         $this->service = $service;
         $this->db = $service->getDb();
@@ -43,6 +45,26 @@ class AdminModel
 
         }
         return $res;
+    }
+
+    /**
+     * 添加系统日志
+     * @param $bid
+     * @param $loginfo
+     * @param string $type
+     */
+    public function sysLog($bid,$loginfo,$type='sys')
+    {
+        if($bid && $loginfo) {
+            $info = ng_mysql_json_safe_encode($loginfo);
+            $map = [
+                'company_id'=>$bid,
+                'info'=>$info,
+                'type'=>$type,
+                'ctime'=>time()
+            ];
+            $this->db->table('sys_logs')->insertGetId($map);
+        }
     }
 
     public function str()
