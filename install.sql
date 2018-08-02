@@ -49,6 +49,17 @@ CREATE TABLE `ng_sys_admin_account` (
 VALUES (123,'admin','default','57395bc5b73f0e880830285482f716f5','tq8smr','管理员',0,1,1533183790,1533183790)
 
 
+CREATE TABLE `ng_sys_logs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `company_id` int(10) unsigned NOT NULL COMMENT '商业id',
+  `type` varchar(255) NOT NULL COMMENT '类型',
+  `info` text NULL COMMENT '详细',
+  `ctime` int(11) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_company_id` (`company_id`),
+  KEY `idx_type` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统日志表';
+
 CREATE TABLE `ng_sys_company_account` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `account` varchar(255) NOT NULL COMMENT '账号',
