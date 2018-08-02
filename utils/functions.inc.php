@@ -258,3 +258,13 @@ function urlGen($req,$path,$query=[],$no_host=false)
     }
 
 }
+
+/**
+ * 入库安全
+ * @param $data
+ * @return string
+ */
+function ng_mysql_json_safe_encode($data)
+{
+    return addslashes(json_encode($data,JSON_UNESCAPED_UNICODE));
+}
