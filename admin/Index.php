@@ -49,7 +49,7 @@ class Index extends PermissionBase
 
         //default info url
         $path = [
-            'mark' => 'plugin',
+            'mark' => 'sys',
             'bid'  => $req->compony_id,
             'pl_name'=>'admin',
         ];

@@ -147,7 +147,10 @@ class Pub extends AdminBase
 
         $status = true;
         $mess = '成功';
-        $cookie_val = Cookie::exists('admin_user');
+        $cookie_exist = Cookie::exists('admin_user');
+        if ($cookie_exist){
+            $cookie_val = Cookie::get('admin_user');
+        }
 
         $data = [
             'default_user'=>$cookie_val,
