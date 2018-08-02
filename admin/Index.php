@@ -14,6 +14,18 @@ use libs\asyncme\RequestHelper;
 
 class Index extends PermissionBase
 {
+    public function infoAction(RequestHelper $req,array $preData)
+    {
+        $status = true;
+        $mess = '成功';
+        $data = [
+            'test'=>'hello admin!',
+            'req'=>$req,
+        ];
+
+        return $this->render($status,$mess,$data);
+    }
+
     public function tAction(RequestHelper $req,array $preData)
     {
         $status = true;
@@ -34,11 +46,21 @@ class Index extends PermissionBase
         $model = new model\Menu($this->service);
         $navs = $model->getNav();
 
-        $session = $this->service->getSession();
-        $sessions['admin_user'] = $session->get('admin_user');
-        $sessions['admin_name'] = $session->get('admin_name');
-        $sessions['admin_avator'] = $session->get('admin_avator');
-        $sessions['admin_login_time'] = $session->get('admin_login_time');
+
+        //default info url
+        $path = [
+            'mark' => 'plugin',
+            'bid'  => $req->compony_id,
+            'pl_name'=>'admin',
+        ];
+        $query = [
+            'mod'=>'index',
+            'act'=>'info'
+        ];
+        $default_frame_url = urlGen($req,$path,$query,true);
+
+
+        //ng_func_privilege_check($req->compony_id,$this->sessions['admin_uid'],'index');
 
         $data = [
             'title'=>'hello admin!',
@@ -47,9 +69,12 @@ class Index extends PermissionBase
             'mod'=> $req->module,
             'act'=>$req->action,
             'navs' => $navs,
-            'sessions'=>$sessions,
+            'sessions'=>$this->sessions,
+            'default_frame_url'=>$default_frame_url,
             'content'=>'this is the base template in admin plugins with model:'.$model->str(),
         ];
+
+
 
         return $this->render($status,$mess,$data,'template','Index/index');
     }

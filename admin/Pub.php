@@ -85,9 +85,10 @@ class Pub extends AdminBase
                         $cookie->save();
 
                         $session = $this->service->getSession();
+                        $session->set('admin_uid',$admin_res['id']);
                         $session->set('admin_user',$admin_res['account']);
                         $session->set('admin_name',$admin_res['nickname']);
-                        $session->set('admin_avator',$admin_res['avator']);
+                        $session->set('admin_avatar',$admin_res['avatar']);
                         $session->set('admin_login_time',time());
 
                         $logInfo = [
@@ -165,9 +166,10 @@ class Pub extends AdminBase
     {
 
         $session = $this->service->getSession();
+        $session->delete('admin_uid');
         $session->delete('admin_user');
         $session->delete('admin_name');
-        $session->delete('admin_avator');
+        $session->delete('admin_avatar');
         $session->delete('admin_login_time');
 
         $bid = $req->compony_id;

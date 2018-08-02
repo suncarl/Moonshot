@@ -15,6 +15,8 @@ use \Slim\Http\UploadedFile;
 
 class PermissionBase extends AdminBase
 {
+    public $sessions;
+
     public function auth()
     {
         $req = $this->service->getRequestHelper();
@@ -35,6 +37,15 @@ class PermissionBase extends AdminBase
         $mess = '';
 
         $session = $this->service->getSession();
+
+        $sessions['admin_uid'] = $session->get('admin_uid');
+        $sessions['admin_user'] = $session->get('admin_user');
+        $sessions['admin_name'] = $session->get('admin_name');
+        $sessions['admin_avatar'] = $session->get('admin_avatar');
+        $sessions['admin_login_time'] = $session->get('admin_login_time');
+
+        $this->sessions = $sessions;
+
         $status = $session->get('admin_user') ? true : false;
         return [
             'status'=>$status,

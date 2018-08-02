@@ -100,10 +100,10 @@
                 <ul class="nav simplewind-nav pull-right">
                     <li class="light-blue">
                         <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                            {% if sessions.admin_avator %}
-                                <img class="nav-user-photo" width="30" height="30" src="{{ sessions.admin_avator }}" alt="{{ sessions.admin_name }}">
+                            {% if sessions.admin_avatar %}
+                                <img class="nav-user-photo" width="30" height="30" src="{{ sessions.admin_avatar }}" alt="11" >
                             {% else %}
-                                <img class="nav-user-photo" width="30" height="30" src="__TMPL__Public/assets/images/logo-18.png" alt="{{ sessions.admin_name }}">
+                                <img class="nav-user-photo" width="30" height="30" src="/Public/assets/images/logo-18.png" alt="">
                             {% endif %}
 							<span class="user-info">
                                 欢迎您!{{ sessions.admin_name }}
@@ -127,5 +127,106 @@
             </div>
         </div>
     </div>
+
+    <!-- 菜单 -->
+    <div class="main-container container-fluid">
+        <div id="loading" style="display: block;"><i class="loadingicon"></i><span>{:L('LOADING')}</span></div>
+        <div class="sidebar" id="sidebar">
+            <!-- <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+            </div> -->
+            <div id="nav_wraper">
+
+                <ul class="nav nav-list">
+                    <!--{:getsubmenu($submenus)}-->
+                </ul>
+            </div>
+
+        </div>
+
+        <div id="main_content_id" class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <a id="task-pre" class="task-changebt">←</a>
+                <div id="task-content">
+                    <ul class="macro-component-tab" id="task-content-inner">
+                        <li class="macro-component-tabitem noclose" app-id="0" app-url="{{ default_frame_url }}" app-name="首页">
+                            <span class="macro-tabs-item-text">首页</span>
+                        </li>
+                    </ul>
+                    <div style="clear:both;"></div>
+                </div>
+                <a id="task-next" class="task-changebt">→</a>
+            </div>
+
+            <div class="page-content" id="content">
+                <iframe src="{{ default_frame_url }}" style="width:100%;height: 100%;" frameborder="0" id="appiframe-0" class="appiframe"></iframe>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/wxapp/asset/js/jquery.js"></script>
+    <script src="/wxapp/asset/js/wind.js"></script>
+    <script src="/wxapp/asset/simpleboot/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+    </script>
+
+    <script>
+        var ismenumin = $("#sidebar").hasClass("menu-min");
+        $(".nav-list").on( "click",function(event) {
+            var closest_a = $(event.target).closest("a");
+            if (!closest_a || closest_a.length == 0) {
+                return
+            }
+            console.log('a');
+            if (!closest_a.hasClass("dropdown-toggle")) {
+                if (ismenumin && "click" == "tap" && closest_a.get(0).parentNode.parentNode == this) {
+                    var closest_a_menu_text = closest_a.find(".menu-text").get(0);
+                    if (event.target != closest_a_menu_text && !$.contains(closest_a_menu_text, event.target)) {
+                        return false
+                    }
+                }
+                return
+            }
+
+            var closest_a_next = closest_a.next().get(0);
+            if (!$(closest_a_next).is(":visible")) {
+                var closest_ul = $(closest_a_next.parentNode).closest("ul");
+                if (ismenumin && closest_ul.hasClass("nav-list")) {
+                    return
+                }
+                closest_ul.find("> .open > .submenu").each(function() {
+                    if (this != closest_a_next && !$(this.parentNode).hasClass("active")) {
+                        $(this).slideUp(150).parent().removeClass("open")
+                    }
+                });
+            }
+            if (ismenumin && $(closest_a_next.parentNode.parentNode).hasClass("nav-list")) {
+                return false;
+            }
+            $(closest_a_next).slideToggle(150).parent().toggleClass("open");
+            return false;
+        });
+        $(function(){
+            $('#toogle_left_side').click(function(){
+                var self = $(this);
+                if(self.find('i').hasClass('fa-toggle-on')){
+                    self.find('i').removeClass('fa-toggle-on').addClass('fa-toggle-off');
+                    $('#sidebar').toggle('normal',function(){
+                        $('#main_content_id').addClass('item-main-toggle-off');
+                    });
+
+                }else{
+                    self.find('i').removeClass('fa-toggle-off').addClass('fa-toggle-on');
+                    $('#sidebar').toggle('normal',function(){
+                        $('#main_content_id').removeClass('item-main-toggle-off');
+                    });
+
+                }
+
+            });
+        });
+    </script>
+    <script src="/wxapp/asset/js/common.js"></script>
+    <script src="/assets/admin/public/js/index.js"></script>
 </body>
 </html>

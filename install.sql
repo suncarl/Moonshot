@@ -57,6 +57,19 @@ CREATE TABLE `ng_sys_admin_account_faillog` (
   KEY `idx_admin_uid` (`admin_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统管理员登陆错误表';
 
+CREATE TABLE `ng_sys_privilege_lists` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `company_id` int(10) unsigned NOT NULL COMMENT '商业id',
+  `admin_uid` int(10) unsigned NOT NULL COMMENT '管理用户id',
+  `priv_path` VARCHAR(255) NULL COMMENT '权限路径',
+  `priv_custom_data` text NULL COMMENT '自定义权限池,json格式',
+  `ctime` int(11) NOT NULL COMMENT '创建时间',
+  `mtime` int(11) NOT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_company_id` (`company_id`),
+  KEY `idx_admin_uid` (`admin_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统权限控制表';
+
 CREATE TABLE `ng_sys_logs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `company_id` int(10) unsigned NOT NULL COMMENT '商业id',
