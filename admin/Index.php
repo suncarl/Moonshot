@@ -43,41 +43,20 @@ class Index extends PermissionBase
         $status = true;
         $mess = '成功';
 
-        $model = new model\Menu($this->service);
-        $navs = $model->getNav();
-
-
-        //default info url
-        $path = [
-            'mark' => 'sys',
-            'bid'  => $req->compony_id,
-            'pl_name'=>'admin',
-        ];
-        $query = [
-            'mod'=>'index',
-            'act'=>'info'
-        ];
-        $default_frame_url = urlGen($req,$path,$query,true);
+        $nav_data = $this->nav_default($req,$preData);
 
 
         //ng_func_privilege_check($req->compony_id,$this->sessions['admin_uid'],'index');
 
         $data = [
             'title'=>'hello admin!',
-            'bid'=>$req->compony_id,
-            'pl_name'=>$req->request_plugin,
-            'mod'=> $req->module,
-            'act'=>$req->action,
-            'navs' => $navs,
-            'sessions'=>$this->sessions,
-            'default_frame_url'=>$default_frame_url,
-            'content'=>'this is the base template in admin plugins with model:'.$model->str(),
+            'content'=>'',
         ];
-
-
+        $data = array_merge($data,$nav_data);
 
         return $this->render($status,$mess,$data,'template','Index/index');
     }
+
 
     public function codeAction(RequestHelper $req,array $preData)
     {

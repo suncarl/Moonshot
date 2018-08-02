@@ -26,6 +26,7 @@
         .navbar .nav_lists .btn-mid{padding: 2px 12px;}
         .macro-component-tabitem{width:101px;}
         .item-main-toggle-off{margin-left: 0px !important;}
+        .nav_active {color: white;background: olivedrab}
 
         /*-----------------导航hack--------------------*/
         .nav-list>li.open{position: relative;}
@@ -65,38 +66,13 @@
                     <!-- 获取一级栏目菜单 -->
 
                     {% for key, value in navs %}
-                        <a class="btn btn-mid " href="#" title="{{ value.name }}" target="_self">
+                        <a class="btn btn-mid {{ value.active }}" href="#" title="{{ value.name }}" target="_self">
                             <i class="fa fa-{{ value.icon }}"> {{ value.name }}</i>
                         </a>
                     {% endfor %}
 
                 </div>
-                <div class="pull-left nav_shortcuts" style="display: none;">
 
-                    <a class="btn btn-small btn-warning" href="#" title="首页" target="_blank">
-                        <i class="fa fa-home"></i>
-                    </a>
-
-                    <if condition="sp_auth_check(sp_get_current_admin_id(),'portal/AdminTerm/index')">
-                        <a class="btn btn-small btn-success" href="javascript:openapp('{:U('portal/AdminTerm/index')}','index_termlist','{:L('PORTAL_ADMINTERM_INDEX')}');" title="{:L('PORTAL_ADMINTERM_INDEX')}">
-                            <i class="fa fa-th"></i>
-                        </a>
-                    </if>
-
-                    <if condition="sp_auth_check(sp_get_current_admin_id(),'portal/AdminPost/index')">
-                        <a class="btn btn-small btn-info" href="javascript:openapp('{:U('portal/AdminPost/index')}','index_postlist','{:L('PORTAL_ADMINPOST_INDEX')}');" title="{:L('PORTAL_ADMINPOST_INDEX')}">
-                            <i class="fa fa-pencil"></i>
-                        </a>
-                    </if>
-
-                    <if condition="sp_auth_check(sp_get_current_admin_id(),'admin/setting/clearcache')">
-                        <a class="btn btn-small btn-danger" href="javascript:openapp('{:U('admin/setting/clearcache')}','index_clearcache','{:L('ADMIN_SETTING_CLEARCACHE')}');" title="{:L('ADMIN_SETTING_CLEARCACHE')}">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                    </if>
-
-
-                </div>
                 <ul class="nav simplewind-nav pull-right">
                     <li class="light-blue">
                         <a data-toggle="dropdown" href="#" class="dropdown-toggle">
@@ -111,16 +87,12 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
-                            <!--<if condition="sp_auth_check(sp_get_current_admin_id(),'admin/setting/site')">-->
-                                <!--<li><a href="javascript:openapp('{:U('setting/site')}','index_site','{:L('ADMIN_SETTING_SITE')}');"><i class="fa fa-cog"></i> {:L('ADMIN_SETTING_SITE')}</a></li>-->
-                            <!--</if>-->
-                            <!--<if condition="sp_auth_check(sp_get_current_admin_id(),'admin/user/userinfo')">-->
-                                <!--<li><a href="javascript:openapp('{:U('user/userinfo')}','index_userinfo','{:L('ADMIN_USER_USERINFO')}');"><i class="fa fa-user"></i> {:L('ADMIN_USER_USERINFO')}</a></li>-->
-                            <!--</if>-->
-                            <!--<if condition="sp_auth_check(sp_get_current_admin_id(),'admin/setting/password')">-->
-                                <!--<li><a href="javascript:openapp('{:U('setting/password')}','index_password','{:L('ADMIN_SETTING_PASSWORD')}');"><i class="fa fa-lock"></i> {:L('ADMIN_SETTING_PASSWORD')}</a></li>-->
-                            <!--</if>-->
-                            <li><a href="{{ URL('sys',bid~'/'~pl_name,{'act':'logout','mod':'pub'}) }}"><i class="fa fa-sign-out"></i> 退出 </a></li>
+
+                            <li><a href="javascript:openapp('{{ URL("sys",bid~"/"~pl_name,{"mod":"user","act":"userinfo"}) }}','index_userinfo','用户信息');"><i class="fa fa-user"></i> 用户信息 </a></li>
+
+                            <li><a href="javascript:openapp('{{ URL("sys",bid~"/"~pl_name,{"mod":"setting","act":"password"}) }}','index_password','修改密码');"><i class="fa fa-lock"></i> 修改密码</a></li>
+
+                            <li><a href="{{ URL('sys',bid~'/'~pl_name,{'mod':'pub','act':'logout'}) }}"><i class="fa fa-sign-out"></i> 退出 </a></li>
                         </ul>
                     </li>
                 </ul>
@@ -131,6 +103,7 @@
     <!-- 菜单 -->
     <div class="main-container container-fluid">
         <div id="loading" style="display: block;"><i class="loadingicon"></i><span>加载中</span></div>
+
         <div class="sidebar" id="sidebar">
             <!-- <div class="sidebar-shortcuts" id="sidebar-shortcuts">
             </div> -->
