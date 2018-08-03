@@ -22,8 +22,10 @@ class ResponeHelper
 
     private $template;
 
+    private $plugin_name;
 
-    public function __construct($status,$mess,$data,$type='json',$template='')
+
+    public function __construct($status,$mess,$data,$type='json',$template='',$plugin_name='')
     {
         $this->status = $status;
         $this->mess = $mess;
@@ -31,6 +33,9 @@ class ResponeHelper
         $this->reponse_type = $type;
         if (strtolower($type)=='template') {
             $this->template = $template;
+        }
+        if ($plugin_name) {
+            $this->plugin_name = $plugin_name;
         }
     }
 
@@ -57,5 +62,10 @@ class ResponeHelper
     public function getTemplate()
     {
         return $this->template;
+    }
+
+    public function getPluginName()
+    {
+        return $this->plugin_name;
     }
 }

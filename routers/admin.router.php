@@ -68,6 +68,7 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
             $response_output = $pl_respone->getType();
             $response_data = $pl_respone->getData();
             $response_template = $pl_respone->getTemplate();
+            $response_plugin_name = $pl_respone->getPluginName();
             $json_data = $asyRequest->build_json_data($pl_respone->getStatus(),$pl_respone->getMessage(),$pl_respone->getData());
         } else {
 
@@ -79,6 +80,7 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
         $json_data = $asyRequest->build_json_data(false,$e->getMessage());
     }
 
+
     switch ($response_output) {
         case 'json' :
             return $response->withJson($json_data);
@@ -88,8 +90,30 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
             return $response->withRedirect($response_data,301);
         case 'captcha' :
             return $response->withHeader('Content-Type','image/jpeg')->write($response_data->output());
-        case 'template' :
-            return $this->admin_view->render($response,$response_template,$response_data);
+        case 'template' :{
+            if('admin'==$response_plugin_name) {
+                return $this->admin_view->render($response,$response_template,$response_data);
+            } else {
+                $name_spaces = explode('\\',$response_plugin_name);
+                array_shift($name_spaces);//去掉命名空间
+                array_pop($name_spaces);//去掉类名
+                $playup_template_name = $response_template;
+                if ($name_spaces) {
+                    $response_template = implode("/",$name_spaces)."/templates/".$response_template;
+                }
+                $template_ext_type = '.twig.html';
+                if (substr($response_template,0,-strlen($template_ext_type))!=$template_ext_type) {
+                    $response_template.= $template_ext_type;
+                }
+                if(file_exists("../plugins/".$response_template)) {
+                    return $this->plugin_view->render($response,$response_template,$response_data);
+                } else {
+                    $json_data = $asyRequest->build_json_data(false,"template ".$playup_template_name.' no found!');
+                    $response->withJson($json_data);
+                }
+
+            }
+        }
         default :
             return $response->withJson($json_data);
     }
