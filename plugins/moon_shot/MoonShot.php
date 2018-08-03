@@ -22,6 +22,7 @@ class MoonShot extends Plugins
         $data = [
             'author'=>'Async Me',
             'date'=>'2018-07-10',
+            'email'=> 'asyncme2018@aol.com',
         ];
 
         return new ResponeHelper($status,$mess,$data,'template','index',__CLASS__);
