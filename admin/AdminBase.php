@@ -66,16 +66,28 @@ class AdminBase extends Plugins
         $model = new model\Menu($this->service);
         $navs = $model->getNav();
 
+        $default_menu_id = 0;
         if ($navs) {
             foreach ($navs as $key=>$val) {
+                //是否加入数据检查
+
+                //默认取第一个
+                $default_menu_id = $default_menu_id ? $default_menu_id : $val['id'];
                 $navs[$key]['active'] = '';
                 if ($val['app']==$req->request_plugin && $val['model']==$req->module && $val['action']==$req->action) {
-                    //是否加入数据检查
+
                     $navs[$key]['active'] = 'nav_active';
+                    //适配到取正式的
+                    $default_menu_id=$val['id'];
                 }
             }
         }
-        
+
+        //获得子菜单
+        if ($default_menu_id) {
+            $subMenus = $model->getSubMenu($default_menu_id);
+        }
+
 
         $path = [
             'mark' => 'sys',
@@ -94,6 +106,7 @@ class AdminBase extends Plugins
             'mod'=> $req->module,
             'act'=>$req->action,
             'navs' => $navs,
+            'submenu'=>$subMenus,
             'sessions'=>$this->sessions,
             'default_frame_url'=>$default_frame_url,
         ];

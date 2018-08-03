@@ -107,13 +107,14 @@
         <div class="sidebar" id="sidebar">
             <!-- <div class="sidebar-shortcuts" id="sidebar-shortcuts">
             </div> -->
+            {% block leftmenu %}
             <div id="nav_wraper">
 
                 <ul class="nav nav-list">
                     <!--{:getsubmenu($submenus)}-->
                 </ul>
             </div>
-
+            {% endblock %}
         </div>
 
         <div id="main_content_id" class="main-content">

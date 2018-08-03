@@ -117,6 +117,7 @@ CREATE TABLE `ng_sys_menu` (
   `model` varchar(30)  NULL DEFAULT '' COMMENT '控制器',
   `action` varchar(50)  NULL DEFAULT '' COMMENT '操作名称',
   `data` varchar(250)  NULL DEFAULT '' COMMENT '额外参数',
+  `category` varchar(250)  NULL DEFAULT '' COMMENT '分类组合',
   `placehold` varchar(50) null COMMENT '替换符合，通常用于bid',
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '菜单类型  0：只作为菜单; 1：权限认证+菜单；2:外链',
   `link` varchar(255) NULL  COMMENT '外链URL，仅在type为2时生效',
@@ -134,12 +135,17 @@ CREATE TABLE `ng_sys_menu` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='后台管理菜单表';
 
 #insert datas
-insert into  `ng_sys_menu` (`id`, `parentid`, `app`, `model`, `action`, `data`, `placehold`, `type`,`link`, `status`, `name`, `icon`, `remark`, `listorder` ,`ctime`,`mtime`) VALUES
-(1,0,'admin','site','index','','',1,'',1,'网站管理','th','',30,1532693502,1532693502),
-(2,0,'admin','mini','index','','',1,'',1,'小程序管理','th','',25,1532693502,1532693502),
-(3,0,'admin','user','index','','',1,'',1,'用户管理','th','',20,1532693502,1532693502),
-(4,0,'admin','setting','index','','',1,'',1,'设置管理','th','',15,1532693502,1532693502),
-(5,0,'admin','plugins','index','','',1,'',1,'插件管理','th','',10,1532693502,1532693502);
+insert into  `ng_sys_menu` (`id`, `parentid`, `app`, `model`, `action`, `data`,`category`, `placehold`, `type`,`link`, `status`, `name`, `icon`, `remark`, `listorder` ,`ctime`,`mtime`) VALUES
+(1,0,'admin','index','index','','top','',1,'',1,'首页','th','',30,1532693502,1532693502),
+(2,0,'admin','site','index','','top','',1,'',1,'网站','th','',30,1532693502,1532693502),
+(3,0,'admin','mini','index','','top','',1,'',1,'小程序','th','',25,1532693502,1532693502),
+(4,0,'admin','user','index','','top','',1,'',1,'用户','th','',20,1532693502,1532693502),
+(5,0,'admin','setting','index','','top','',1,'',1,'设置','th','',15,1532693502,1532693502),
+(6,0,'admin','plugins','index','','top','',1,'',1,'插件','th','',10,1532693502,1532693502);
+
+insert into  `ng_sys_menu` (`id`, `parentid`, `app`, `model`, `action`, `data`,`category`, `placehold`, `type`,`link`, `status`, `name`, `icon`, `remark`, `listorder` ,`ctime`,`mtime`) VALUES
+(10,1,'admin','index','info','','综合','',1,'',1,'信息','th','',30,1532693502,1532693502),
+(11,1,'admin','index','dashboard','','综合','',1,'',1,'仪表盘','th','',30,1532693502,1532693502)
 
 CREATE TABLE `ng_sys_config` (
   `id` smallint(6) unsigned NOT NULL,
