@@ -57,7 +57,8 @@ class AdminBase extends Plugins
         if ($template && substr($template,0,-10)!='.twig.html') {
             $template.= '.twig.html';
         }
-        return new ResponeHelper($status,$mess,$data,$type,$template);
+
+        return new ResponeHelper($status,$mess,$data,$type,$template,'admin');
     }
 
 

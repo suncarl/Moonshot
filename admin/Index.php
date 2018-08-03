@@ -16,14 +16,12 @@ class Index extends PermissionBase
 {
     public function infoAction(RequestHelper $req,array $preData)
     {
-        $status = true;
-        $mess = '成功';
-        $data = [
-            'test'=>'hello admin!',
-            'req'=>$req,
-        ];
+        $plugin_req = $req;
+        $plugin_req->request_plugin = 'moon_shot';
+        $plugin_req->action = 'index';
 
-        return $this->render($status,$mess,$data);
+        $plugin_reponse = callPlugin($plugin_req,$this->service);
+        return $plugin_reponse;
     }
 
     public function tAction(RequestHelper $req,array $preData)
