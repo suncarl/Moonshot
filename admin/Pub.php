@@ -32,7 +32,7 @@ class Pub extends AdminBase
 
         $path = [
             'mark' => 'plugin',
-            'bid'  => $req->compony_id,
+            'bid'  => $req->company_id,
             'pl_name'=>'verification_code',
         ];
         $query = [
@@ -54,7 +54,7 @@ class Pub extends AdminBase
             if ($req->request_method=='POST') {
 
                 $post_datas = $req->post_datas;
-                $session_code = $this->service->getSession()->get($req->compony_id.'_vcode');
+                $session_code = $this->service->getSession()->get($req->company_id.'_vcode');
 
 
                 if ($post_datas['verify']!=$session_code) {
@@ -71,7 +71,7 @@ class Pub extends AdminBase
                     $error = '密码不为空';
                 }
                 $admin_account = new model\Account($this->service);
-                $admin_res = $admin_account->getAdminWithName($req->compony_id,$post_datas['username']);
+                $admin_res = $admin_account->getAdminWithName($req->company_id,$post_datas['username']);
                 if($admin_res && $admin_res['status']==1) {
                     $flag = $admin_account->checkPass($post_datas['password'],$admin_res['password'],$admin_res['slat']);
                     if (!$flag) {
@@ -101,9 +101,9 @@ class Pub extends AdminBase
                         ];
 
                         $this->service->getSession()->set('admin_user_fail',0);
-                        $admin_account->sysLog($req->compony_id,$logInfo,'pub/login');
+                        $admin_account->sysLog($req->company_id,$logInfo,'pub/login');
 
-                        $bid = $req->compony_id;
+                        $bid = $req->company_id;
                         $path = [
                             'mark' => 'sys',
                             'bid'  => $bid,
@@ -136,7 +136,7 @@ class Pub extends AdminBase
                         'mess'=>'登陆失败',
                         'flag'=>false,
                     ];
-                    $admin_account->sysLog($req->compony_id,$logInfo,'pub/login');
+                    $admin_account->sysLog($req->company_id,$logInfo,'pub/login');
                 }
 
                 $this->service->getSession()->set('admin_user_fail',$admin_user_fail+1);
@@ -175,7 +175,7 @@ class Pub extends AdminBase
         $session->delete('admin_avatar');
         $session->delete('admin_login_time');
 
-        $bid = $req->compony_id;
+        $bid = $req->company_id;
         $path = [
             'mark' => 'sys',
             'bid'  => $bid,

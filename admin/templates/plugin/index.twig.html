@@ -1,0 +1,19 @@
+{% extends 'boot/index.twig.html' %}
+
+{% block custom_lefttop_menu %}
+<ul class="nav nav-list">
+    {# 第1层菜单 #}
+    {% if plugin_menus %}
+    {% for key,val in plugin_menus %}
+    <li>
+        <a href="javascript:openapp('{{ val.url }}','{{ val.id }}','{{ val.name }}',true);">
+            <i class="fa fa-{{ val.icon|default('desktop') }}"></i>
+            <span class="menu-text">
+                {{ val.name }}
+            </span>
+        </a>
+    </li>
+    {% endfor %}
+    {% endif %}
+</ul>
+{% endblock %}

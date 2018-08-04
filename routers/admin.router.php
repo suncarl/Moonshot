@@ -44,7 +44,7 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
         static $static_pl_service;
 
         if ( !$static_pl_service ) {
-            $pl_service = Service::getInstance($asyRequest->compony_id,$asyRequest->service_id,$asyRequest);
+            $pl_service = Service::getInstance($asyRequest->company_id,$asyRequest->service_id,$asyRequest);
             $pl_service->setSession($this->session);
             $pl_service->setCache($this->filecache);
             $pl_service->setRedis($this->redis);
@@ -53,7 +53,7 @@ $app->any('/sys/{bid:[\w]+}/{pl_name:[\w]+}', function (Request $request, Respon
             $static_pl_service = $pl_service;
         }
 
-//        $pl_service = new Service($asyRequest->compony_id,$asyRequest->service_id);
+//        $pl_service = new Service($asyRequest->company_id,$asyRequest->service_id);
 //        $pl_service->setCache($this->redis);
 //        $pl_service->setDb($this->db);
 

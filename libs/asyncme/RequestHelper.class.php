@@ -16,7 +16,7 @@ use libs\exceptions\InvaildException;
 class RequestHelper
 {
     //企业id（大B）
-    public $compony_id;
+    public $company_id;
     //业务id
     public $service_id = 0;
     //用户id
@@ -56,7 +56,7 @@ class RequestHelper
         $this->router = $router;
 
         $bid = $router->getArgument('bid');
-        $this->compony_id = $bid;
+        $this->company_id = $bid;
 
         $pl_name = $router->getArgument('pl_name');
         $this->request_plugin = $pl_name;

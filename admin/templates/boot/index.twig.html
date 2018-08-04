@@ -66,7 +66,7 @@
                     <!-- 获取一级栏目菜单 -->
 
                     {% for key, value in navs %}
-                        <a class="btn btn-mid {{ value.active }}" href="#" title="{{ value.name }}" target="_self">
+                        <a class="btn btn-mid {{ value.active }}" href="{{ value.url }}" title="{{ value.name }}" target="_self">
                             <i class="fa fa-{{ value.icon }}"> {{ value.name }}</i>
                         </a>
                     {% endfor %}
@@ -107,8 +107,10 @@
         <div class="sidebar" id="sidebar">
             <!-- <div class="sidebar-shortcuts" id="sidebar-shortcuts">
             </div> -->
-            {% block leftmenu %}
+            {% block left_menu %}
             <div id="nav_wraper">
+                {% block custom_lefttop_menu %}
+                {% endblock %}
                 <ul class="nav nav-list">
                     {# 第1层菜单 #}
                     {% if submenu %}
@@ -191,8 +193,11 @@
                     {% endfor %}
                     {% endif %}
                 </ul>
+                {% block custom_leftbottom_menu %}
+                {% endblock %}
             </div>
             {% endblock %}
+
         </div>
 
         <div id="main_content_id" class="main-content">
@@ -201,7 +206,7 @@
                 <div id="task-content">
                     <ul class="macro-component-tab" id="task-content-inner">
                         <li class="macro-component-tabitem noclose" app-id="0" app-url="{{ default_frame_url }}" app-name="首页">
-                            <span class="macro-tabs-item-text">首页</span>
+                            <span class="macro-tabs-item-text">{{ default_frame_name }}</span>
                         </li>
                     </ul>
                     <div style="clear:both;"></div>

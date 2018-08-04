@@ -62,6 +62,11 @@ class AdminBase extends Plugins
     }
 
 
+    protected function recursion_menus($company_id,$menus)
+    {
+
+    }
+
     public function nav_default(RequestHelper $req,array $preData)
     {
         $model = new model\Menu($this->service);
@@ -81,18 +86,41 @@ class AdminBase extends Plugins
                     //适配到取正式的
                     $default_menu_id=$val['id'];
                 }
+
+                $path = [
+                    'mark' => 'sys',
+                    'bid'  => $req->company_id,
+                    'pl_name'=>$val['app'],
+                ];
+                $query = [
+                    'mod'=>$val['model'],
+                    'act'=>$val['action']
+                ];
+                $navs[$key]['url'] = urlGen($req,$path,$query);
             }
         }
 
         //获得子菜单
         if ($default_menu_id) {
             $subMenus = $model->getSubMenu($default_menu_id);
+            if($subMenus) foreach ($subMenus as $key=>$val) {
+                $path = [
+                    'mark' => 'sys',
+                    'bid'  => $req->company_id,
+                    'pl_name'=>$val['app'],
+                ];
+                $query = [
+                    'mod'=>$val['model'],
+                    'act'=>$val['action']
+                ];
+                $subMenus[$key]['url'] = urlGen($req,$path,$query);
+            }
         }
 
 
         $path = [
             'mark' => 'sys',
-            'bid'  => $req->compony_id,
+            'bid'  => $req->company_id,
             'pl_name'=>'admin',
         ];
         $query = [
@@ -100,9 +128,10 @@ class AdminBase extends Plugins
             'act'=>'info'
         ];
         $default_frame_url = urlGen($req,$path,$query,true);
+        $default_frame_name = '首页';
 
         $data = [
-            'bid'=>$req->compony_id,
+            'bid'=>$req->company_id,
             'pl_name'=>$req->request_plugin,
             'mod'=> $req->module,
             'act'=>$req->action,
@@ -110,6 +139,7 @@ class AdminBase extends Plugins
             'submenu'=>$subMenus,
             'sessions'=>$this->sessions,
             'default_frame_url'=>$default_frame_url,
+            'default_frame_name'=>$default_frame_name,
         ];
         return $data;
 

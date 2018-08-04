@@ -8,7 +8,6 @@
 
 namespace admin;
 
-use libs\asyncme\Plugins;
 use admin\model;
 use libs\asyncme\RequestHelper;
 
@@ -44,13 +43,13 @@ class Index extends PermissionBase
         $nav_data = $this->nav_default($req,$preData);
 
 
-        //ng_func_privilege_check($req->compony_id,$this->sessions['admin_uid'],'index');
+        //ng_func_privilege_check($req->company_id,$this->sessions['admin_uid'],'index');
 
         $data = [
             'title'=>'hello admin!',
             'content'=>'',
         ];
-        $data = array_merge($data,$nav_data);
+        $data = array_merge($nav_data,$data);
 
         return $this->render($status,$mess,$data,'template','Index/index');
     }
@@ -72,7 +71,7 @@ class Index extends PermissionBase
 
         $path = [
             'mark' => 'plugin',
-            'bid'  => $req->compony_id,
+            'bid'  => $req->company_id,
             'pl_name'=>'verification_code',
         ];
         $query = [

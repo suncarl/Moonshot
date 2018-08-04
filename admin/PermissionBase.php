@@ -20,7 +20,7 @@ class PermissionBase extends AdminBase
     public function auth()
     {
         $req = $this->service->getRequestHelper();
-        $bid = $req->compony_id;
+        $bid = $req->company_id;
 
         $path = [
             'mark' => 'sys',

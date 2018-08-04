@@ -30,7 +30,8 @@ class VerificationCode extends Plugins
         $data = $builder;
         $type = 'captcha';
 
-        $auth_name = $req->query_datas['auth'] ? $req->query_datas['auth'] : $req->compony_id.'_vcode';
+        $auth_name = $req->query_datas['auth'] ? $req->query_datas['auth'] : 'vcode';
+        $auth_name = $req->company_id."_".$auth_name;
 
         $this->service->getSession()->set($auth_name,$builder->getPhrase());
 
