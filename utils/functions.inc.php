@@ -181,6 +181,13 @@ function getUserAgent()
     return $agent;
 }
 
+function ng_plugins(\libs\asyncme\RequestHelper $asyRequest,\libs\asyncme\Service $pl_service,$custom=[])
+{
+    //权限检查
+
+    return callPlugin($asyRequest,$pl_service,$custom);
+}
+
 /**
  * 插件点用方法
  * @param $asyRequest
@@ -188,7 +195,7 @@ function getUserAgent()
  * @param array $custom
  * @return mixed
  */
-function callPlugin($asyRequest,$pl_service,$custom=[]){
+function callPlugin(\libs\asyncme\RequestHelper $asyRequest,\libs\asyncme\Service $pl_service,$custom=[]){
     $plugin_name = strtolower($asyRequest->request_plugin);
     $plugin_name_lists = explode("_",$plugin_name);
     $plugin_class_data = [];

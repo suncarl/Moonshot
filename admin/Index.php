@@ -20,7 +20,7 @@ class Index extends PermissionBase
         $plugin_req->request_plugin = 'moon_shot';
         $plugin_req->action = 'index';
 
-        $plugin_reponse = callPlugin($plugin_req,$this->service);
+        $plugin_reponse = ng_plugins($plugin_req,$this->service);
         return $plugin_reponse;
     }
 
@@ -62,7 +62,7 @@ class Index extends PermissionBase
         $plugin_req->request_plugin = 'verification_code';
         $plugin_req->action = 'gen';
 
-        $plugin_reponse = callPlugin($plugin_req,$this->service);
+        $plugin_reponse = ng_plugins($plugin_req,$this->service);
         return $plugin_reponse;
     }
 
