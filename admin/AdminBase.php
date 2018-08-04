@@ -61,10 +61,30 @@ class AdminBase extends Plugins
         return new ResponeHelper($status,$mess,$data,$type,$template,'admin');
     }
 
-
-    protected function recursion_menus($company_id,$menus)
+    /**
+     * 递归处理菜单
+     * @param RequestHelper $req
+     * @param $menus
+     * @return mixed
+     */
+    protected function recursion_menus(RequestHelper $req,$menus)
     {
-
+        if($menus) foreach ($menus as $key=>$val) {
+            $path = [
+                'mark' => 'sys',
+                'bid'  => $req->company_id,
+                'pl_name'=>$val['app'],
+            ];
+            $query = [
+                'mod'=>$val['model'],
+                'act'=>$val['action']
+            ];
+            $menus[$key]['url'] = urlGen($req,$path,$query);
+            if ($menus[$key]['items']) {
+                $menus[$key]['items'] = $this->recursion_menus($req,$menus[$key]['items']);
+            }
+        }
+        return $menus;
     }
 
     public function nav_default(RequestHelper $req,array $preData)
@@ -103,18 +123,7 @@ class AdminBase extends Plugins
         //获得子菜单
         if ($default_menu_id) {
             $subMenus = $model->getSubMenu($default_menu_id);
-            if($subMenus) foreach ($subMenus as $key=>$val) {
-                $path = [
-                    'mark' => 'sys',
-                    'bid'  => $req->company_id,
-                    'pl_name'=>$val['app'],
-                ];
-                $query = [
-                    'mod'=>$val['model'],
-                    'act'=>$val['action']
-                ];
-                $subMenus[$key]['url'] = urlGen($req,$path,$query);
-            }
+            $subMenus = $this->recursion_menus($req,$subMenus);
         }
 
 
