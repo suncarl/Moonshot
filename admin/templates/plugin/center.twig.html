@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>插件中心</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/wxapp/asset/simpleboot/themes/{{ site_style }}/theme.min.css" rel="stylesheet">
+    <link href="/wxapp/asset/simpleboot/css/simplebootadmin.css" rel="stylesheet">
+    <link href="/wxapp/asset/simpleboot/font-awesome/4.4.0/css/font-awesome.min.css?page=index"  rel="stylesheet" type="text/css">
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/wxapp/asset/simpleboot/font-awesome/4.4.0/css/font-awesome-ie7.min.css">
+    <![endif]-->
+    <link rel="stylesheet" href="/wxapp/asset/simpleboot/themes/{{ site_style }}/simplebootadminindex.min.css?">
+    <link href="/wxapp/asset/js/artDialog/skins/default.css" rel="stylesheet" />
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="/wxapp/asset/simpleboot/css/simplebootadminindex-ie.css?" />
+    <![endif]-->
+    <style type="text/css">
+    #container li {list-style-type:none;float: left;width: 30%; height: 128px;padding: 10px;margin: 10px 0px; border-bottom: 1px dashed #ccc;}
+    #container li .icon {width: 128px;height: 128px;float: left;display: block;}
+    #container li .info {float: left;display: block;padding: 5px; overflow: hidden;}
+    #container li .info div{height: 24px;display: block;width: 100%;}
+    </style>
+</head>
+
+<body>
+<div id="container">
+    <ul>
+        {% if plugin_lists %}
+        {% for key,val in plugin_lists %}
+        <li>
+            {% if val.base.icon %}
+            <img class="icon" src="/assets/plugin/{{val.file}}/{{val.base.icon}}" />
+            {% else %}
+            <img class="icon" src="#"/>
+            {% endif %}
+            <div class="info">
+                <div class="pl_title">{{val.base.title}} V{{val.base.version}}</div>
+                <div class="pl_cate">分类:{{val.base.category}}</div>
+                <!--<div class="pl_info">{{val.base.desc}}</div>-->
+                <div class="pl_author">作者:{{val.base.author}}</div>
+                <div class="pl_time">时间:{{val.base.time}}</div>
+                <div class="pl_op">操作:
+                    <a href="#">安装</a>
+                    <a href="#">卸载</a>
+                    <a href="#">审核</a>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+
+</div>
+
+</body>
+</html>
