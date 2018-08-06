@@ -2,6 +2,7 @@
 <root>
     <base>
         <title>系统提示</title>
+        <class>MoonShot</class>
         <desc><![CDATA[系统提示图]]></desc>
         <category>default</category>
         <version>1.0</version>

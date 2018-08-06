@@ -2,7 +2,6 @@
 <root>
     <base>
         <title>Demo</title>
-        <class>Demo</class>
         <desc><![CDATA[very simple demo for developer]]></desc>
         <category>default</category>
         <version>1.0</version>

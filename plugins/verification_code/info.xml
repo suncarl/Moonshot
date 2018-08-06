@@ -2,6 +2,7 @@
 <root>
     <base>
         <title>验证码</title>
+        <class>VerificationCode</class>
         <desc><![CDATA[验证码的插件]]></desc>
         <category>default</category>
         <version>1.0</version>
