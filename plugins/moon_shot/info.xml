@@ -2,7 +2,7 @@
 <root>
     <base>
         <title>系统提示</title>
-        <class>MoonShot</class>
+        <name>moon_shot</name>
         <desc><![CDATA[系统提示图]]></desc>
         <category>default</category>
         <version>1.0</version>
@@ -10,9 +10,7 @@
         <time>2018-07-10</time>
         <icon>icon.png</icon>
     </base>
-    <admin>
-        <menu></menu>
-    </admin>
+    <menus></menus>
     <install>
     </install>
 </root>

@@ -2,7 +2,7 @@
 <root>
     <base>
         <title>Demo</title>
-        <class>Demo</class>
+        <name>Demo</name>
         <desc><![CDATA[very simple demo for developer]]></desc>
         <category>default</category>
         <version>1.0</version>
@@ -10,9 +10,7 @@
         <time>2018-07-10</time>
         <icon>icon.png</icon>
     </base>
-    <admin>
-        <menu></menu>
-    </admin>
+    <menus></menus>
     <install>
     </install>
 </root>

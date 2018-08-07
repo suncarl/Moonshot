@@ -65,9 +65,42 @@ class Plugins extends PermissionBase
      */
     public function centerAction(RequestHelper $req,array $preData)
     {
-        $plugin_lists = $this->load_datas($req,$preData);
+        $plugin_lists = $this->load_plugin_datas($req,$preData);
         $status = true;
         $mess = '成功';
+        if($plugin_lists) {
+
+            $installed = 0;
+            $path = [
+                'mark' => 'sys',
+                'bid'  => $req->company_id,
+                'pl_name'=>'admin',
+            ];
+            $query = [
+                'mod'=>'plugins',
+                'installed'=>$installed,
+
+            ];
+
+            foreach ($plugin_lists as $key => $val) {
+
+                $file = $val['name'] ? strtolower($val['name']) : $val['file'];
+                $install_url = array_merge($query,['act'=>'install','file'=>$file]);
+                $plugin_lists[$key]['install_url'] = urlGen($req,$path,$install_url,true);
+
+                $upgrade_url = array_merge($query,['act'=>'upgrade','file'=>$file]);
+                $plugin_lists[$key]['upgrade_url'] = urlGen($req,$path,$upgrade_url,true);
+
+                $uninstall_url = array_merge($query,['act'=>'uninstall','file'=>$file]);
+                $plugin_lists[$key]['uninstall_url'] = urlGen($req,$path,$uninstall_url,true);
+
+                $review_url = array_merge($query,['act'=>'review','file'=>$file]);
+                $plugin_lists[$key]['review_url'] = urlGen($req,$path,$review_url,true);
+
+                $info_url = array_merge($query,['act'=>'info','file'=>$file]);
+                $plugin_lists[$key]['info_url'] = urlGen($req,$path,$info_url,true);
+            }
+        }
         $data = [
             'plugin_lists'=>$plugin_lists,
         ];
@@ -77,40 +110,119 @@ class Plugins extends PermissionBase
 
     public function infoAction(RequestHelper $req,array $preData)
     {
-        die();
+        $status = false;
+        $mess = '失败';
+
+        $path = [
+            'mark' => 'sys',
+            'bid'  => $req->company_id,
+            'pl_name'=>'admin',
+        ];
+        $query = [
+            'mod'=>'plugins',
+            'act'=>'center',
+
+        ];
+        $back_url = urlGen($req,$path,$query,true);
+
+        $data = [
+            'back_url'=>$back_url,
+        ];
+        if($req->query_datas['file']) {
+            $plugin_lists = $this->load_plugin_datas($req,$preData,$req->query_datas['file']);
+            if ($plugin_lists) {
+                $installed = 0;
+                $path = [
+                    'mark' => 'sys',
+                    'bid'  => $req->company_id,
+                    'pl_name'=>'admin',
+                ];
+                $query = [
+                    'mod'=>'plugins',
+                    'installed'=>$installed,
+
+                ];
+
+                foreach ($plugin_lists as $key => $val) {
+
+                    $file = $val['name'] ? strtolower($val['name']) : $val['file'];
+                    $install_url = array_merge($query,['act'=>'install','file'=>$file]);
+                    $plugin_lists[$key]['install_url'] = urlGen($req,$path,$install_url,true);
+
+                    $upgrade_url = array_merge($query,['act'=>'upgrade','file'=>$file]);
+                    $plugin_lists[$key]['upgrade_url'] = urlGen($req,$path,$upgrade_url,true);
+
+                    $uninstall_url = array_merge($query,['act'=>'uninstall','file'=>$file]);
+                    $plugin_lists[$key]['uninstall_url'] = urlGen($req,$path,$uninstall_url,true);
+
+                    $review_url = array_merge($query,['act'=>'review','file'=>$file]);
+                    $plugin_lists[$key]['review_url'] = urlGen($req,$path,$review_url,true);
+
+                    $info_url = array_merge($query,['act'=>'info','file'=>$file]);
+                    $plugin_lists[$key]['info_url'] = urlGen($req,$path,$info_url,true);
+                }
+                reset($plugin_lists);
+
+                $status = true;
+                $mess = '成功';
+                $data = array_merge($data,[
+                    'plugin_lists'=>$plugin_lists[0],
+                ]);
+
+            }
+        }
+
+
+        return $this->render($status,$mess,$data,'template','plugin/info');
     }
+
 
     /**
      * @param RequestHelper $req
      * @param array $preData
      */
-    protected function load_datas(RequestHelper $req,array $preData)
+    protected function load_plugin_datas(RequestHelper $req,array $preData,$filter='')
     {
         $plugin_dir = '../plugins';
         $plugins_lists = [];
         if (is_dir($plugin_dir)) {
-            $fp = opendir($plugin_dir);
-            while($file = readdir($fp)) {
-                //去掉隐藏
-                if(substr($file,0,1)=='.') continue;
+            if ($filter==''){
+                $fp = opendir($plugin_dir);
+                while($file = readdir($fp)) {
+                    //去掉隐藏
+                    if(substr($file,0,1)=='.') continue;
 
-                if ($plugin_dir.'/'.$file.'/info.xml') {
-                    $mtime = filemtime($plugin_dir.'/'.$file);
-                    $ctime = filectime($plugin_dir.'/'.$file);
-                    $plugins_lists[] = ['file'=>$file,'root'=>$plugin_dir,'ctime'=>$ctime,'mtime'=>$mtime];
+                    if (file_exists($plugin_dir.'/'.$file.'/info.xml')) {
+                        $mtime = filemtime($plugin_dir.'/'.$file);
+                        $ctime = filectime($plugin_dir.'/'.$file);
+                        $plugins_lists[] = ['file'=>$file,'root'=>$plugin_dir,'ctime'=>$ctime,'mtime'=>$mtime];
+                    }
+
                 }
-
+                closedir($fp);
+            } else {
+                if (file_exists($plugin_dir.'/'.$filter.'/info.xml')) {
+                    $mtime = filemtime($plugin_dir.'/'.$filter);
+                    $ctime = filectime($plugin_dir.'/'.$filter);
+                    $plugins_lists[] = ['file'=>$filter,'root'=>$plugin_dir,'ctime'=>$ctime,'mtime'=>$mtime];
+                }
             }
+
         }
         $result = [];
         if ($plugins_lists) {
             foreach ($plugins_lists as $key=>$val) {
-                $xml = simplexml_load_file($val['root'].'/'.$val['file'].'/info.xml');
+                $xml = simplexml_load_file($val['root'].'/'.$val['file'].'/info.xml',null,LIBXML_NOCDATA);
                 $json_xml=json_encode($xml);
                 $dejson_xml=json_decode($json_xml,true);
                 $result[] = array_merge($dejson_xml,$val);
             }
         }
         return $result;
+    }
+
+    public function install_plugin(RequestHelper $req,array $preData)
+    {
+
     }
 }

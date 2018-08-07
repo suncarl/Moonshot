@@ -6,10 +6,10 @@
  * Time: 下午6:57
  */
 
-namespace plugins;
+namespace plugins\adv_manager;
 
 
-class AdvManager
+class AdvManager extends Plugins
 {
 
 }
