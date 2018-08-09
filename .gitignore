@@ -55,6 +55,7 @@ composer.lock
 public/upload/*
 public/res/*
 public/tmp/*
+public/data/*
 /data/
 .idea/
 # test
