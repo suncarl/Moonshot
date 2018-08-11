@@ -10,6 +10,8 @@ namespace admin;
 
 use admin\model;
 use libs\asyncme\RequestHelper;
+use PHPSQLParser\PHPSQLParser;
+use PHPSQLParser\utils\PHPSQLParserConstants;
 
 class Plugins extends PermissionBase
 {
@@ -221,8 +223,299 @@ class Plugins extends PermissionBase
         return $result;
     }
 
-    public function install_plugin(RequestHelper $req,array $preData)
+
+
+    /**
+     * 安装插件
+     * @param RequestHelper $req
+     * @param array $preData
+     */
+    public function installAction(RequestHelper $req,array $preData)
     {
+        try{
+            if($req->query_datas['file']) {
+                $plugin_dao = new model\PluginModel($this->service);
+                $plugin_lists = $this->load_plugin_datas($req, $preData, $req->query_datas['file']);
+
+                if($plugin_lists) {
+                    $plugin_lists= reset($plugin_lists);
+
+                    $plugin_base_item = $plugin_lists['base'];
+                    //校样
+                    if ($plugin_lists['file'] == $plugin_base_item['name'] ) {
+                        $update_map = [];
+                        //1.执行数据表
+                        if ($plugin_lists['install']['table']) {
+                            if (!isset($plugin_lists['install']['table'][0])) {
+                                $plugin_lists['install']['table'] = array($plugin_lists['install']['table']);
+                            }
+                            $parse_table_result = [];
+                            $this->parse_xml_install_table($plugin_dao,$plugin_lists['install']['table'],$parse_table_result);
+
+                            if($parse_table_result) {
+                                $update_map['install_table'] = $parse_table_result;
+                            }
+
+                        }
+
+                        //2.插入插件表
+                        $parse_info_result = [];
+                        $plugin_id = $this->parse_xml_install_info($plugin_dao,$plugin_lists,$parse_info_result);
+                        if ($parse_info_result) {
+                            $update_map['base'] = $parse_info_result;
+                        }
+
+                        if ($plugin_id) {
+                            //3.插入菜单表
+                            $parse_menu_result = [];
+                            $this->parse_xml_install_memu($plugin_dao,$plugin_lists['menus'],$plugin_id,$plugin_lists['base']['name'],0,$parse_menu_result);
+                            if ($parse_menu_result) {
+                                $update_map['menu'] = $parse_menu_result;
+                            }
+
+                            if ($update_map) {
+                                $save_map = [];
+                                $save_map['plugin_process'] = ng_mysql_json_safe_encode($update_map);
+                                $save_map['mtime'] = time();
+                                //4.更新插件表
+                                $save_where = [
+                                    'id'=>$plugin_id
+                                ];
+                                $update_flag = $plugin_dao->updatePlugin($save_where,$save_map);
+
+
+                            }
+                        }
+
+
+
+                    } else {
+                        throw new \Exception("安装失败,name和目录名称不一致","10023");
+                    }
+
+
+                }
+
+            }
+        } catch (\Exception $e) {
+            $error = $e->getMessage();
+        }
+
+        if ($error) {
+            $status = false;
+            $mess = '失败';
+            $delay_time = 10;
+        } else {
+            $status = true;
+            $mess = '成功';
+            $delay_time = 5;
+        }
+
+        $path = [
+            'mark' => 'sys',
+            'bid'  => $req->company_id,
+            'pl_name'=>'admin',
+        ];
+        $query = [
+            'mod'=>'plugins',
+            'act'=>'center',
+
+        ];
+        $back_url = urlGen($req,$path,$query);
+
+        $data = [
+            'status'=>$status,
+            'title'=>$plugin_base_item['title'],
+            'version'=>$plugin_base_item['version'],
+            'back_url'=>$back_url,
+            'delay_time'=>$delay_time,
+            'error'=>$error
+        ];
+
+        return $this->render($status,$mess,$data,'template','plugin/install');
+    }
+
+    /**
+     * 处理插件的基本信息
+     * @param model\PluginModel $plugin_dao
+     * @param $plugin_lists
+     * @param $parse_result
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function parse_xml_install_info(model\PluginModel $plugin_dao,$plugin_lists,&$parse_result)
+    {
+        $plugin_base_item = $plugin_lists['base'];
+
+        $session = $this->service->getSession();
+
+        $pl_map = [];
+        $pl_map['ctime'] = time();
+        $pl_map['mtime'] = time();
+        $pl_map['operation'] = $session['admin_uid'];
+
+        $pl_map['category'] = $plugin_base_item['category'];
+        $pl_map['title'] = $plugin_base_item['title'];
+        $pl_map['desc'] = $plugin_base_item['desc'];
+        $pl_map['version'] = $plugin_base_item['version'];
+        $pl_map['author'] = $plugin_base_item['author'];
+        $pl_map['icon'] = $plugin_base_item['icon'];
+        $pl_map['pub_time'] = $plugin_base_item['time'];
+
+        $pl_map['plugin_root'] = $plugin_lists['root'].'/'.$plugin_lists['file'].'/';
+        $pl_map['class_name'] = $plugin_lists['file'];
+
+
+        $parse_result['file']['ctime'] = $plugin_lists['ctime'];
+        $parse_result['file']['mtime'] = $plugin_lists['mtime'];;
+
+        if($plugin_base_item['preview']['item']) {
+            if (!isset($plugin_base_item['preview']['item'][0])){
+                $plugin_base_item['preview']['item'] = array($plugin_base_item['preview']['item']);
+            }
+            $parse_result['preview'] =  $plugin_base_item['preview']['item'];
+        }
+        $where = [
+            'title' => $pl_map['title'],
+            'version' =>$pl_map['version'],
+            'class_name' => $pl_map['class_name'],
+        ];
+        $pl_info = $plugin_dao->getPluginInfo($where,['id','title']);
+        if (!$pl_info) {
+            $pl_id =  $plugin_dao->addPlugin($pl_map);
+            if (!$pl_id) {
+                throw new \Exception("插入插件错误","10020");
+            }
+            return $pl_id;
+        } else {
+            return $pl_info['id'];
+        }
+
+    }
+
+    /**
+     * 处理插件的菜单
+     * @param model\PluginModel $plugin_dao
+     * @param array $menu_xml
+     * @param $plugin_id
+     * @param $plugin_name
+     * @param $parentid
+     * @param $parse_result
+     * @throws \Exception
+     */
+    protected function parse_xml_install_memu(model\PluginModel $plugin_dao,array $menu_xml,$plugin_id,$plugin_name,$parentid,&$parse_result)
+    {
+        if(is_array($menu_xml['item'])) {
+            if (!isset($menu_xml['item'][0])) {
+                $menu_xml['item'] = array($menu_xml['item']);
+            }
+            foreach($menu_xml['item'] as $item) {
+                if ($plugin_id && $item['action'] && $item['name'] ) {
+                    $map = [];
+                    $map['plugin_id'] = $plugin_id;
+                    $map['app'] = $plugin_name;
+                    $map['action'] = $item['action'];
+                    $map['status'] = 1;
+                    $map['parentid'] = $parentid;
+                    $map['name'] = $item['name'];
+                    if($item['icon']) $map['icon'] = $item['icon'];
+                    $map['ctime']= time();
+                    $map['mtime']= time();
+
+                    $where = [
+                        'plugin_id'=>$map['plugin_id'],
+                        'app' =>$map['app'],
+                        'action'=>$map['action']
+                    ];
+                    $pl_info = $plugin_dao->getPluginMenuInfo($where,['id']);
+                    if ($pl_info) {
+                        $new_menu_id = $pl_info['id'];
+                    } else {
+                        $new_menu_id = $plugin_dao->addPluginMenu($map);
+                    }
+                    if ($new_menu_id) {
+                        $parse_result[] = ['id'=>$new_menu_id,'plugin_name'=>$plugin_name,'action'=>$item['action']];
+                        if (count($item['submenu'])) {
+                            $this->parse_xml_install_memu($plugin_dao,$item['submenu'],$plugin_id,$plugin_name,$new_menu_id,$parse_result);
+                        }
+
+                    } else {
+                        throw new \Exception("插入插件菜单错误","10021");
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    /**
+     * 处理插件的数据表
+     * @param model\PluginModel $plugin_dao
+     * @param array $xml
+     * @param $parse_result
+     * @throws \Exception
+     */
+    protected function parse_xml_install_table(model\PluginModel $plugin_dao,array $xml,&$parse_result)
+    {
+        $sql_parser = new PHPSQLParser();
+        $table_prefix = $plugin_dao->get_table_prefix();
+
+        foreach($xml as $item) {
+            $sql = trim($item);
+            $sql_parser->parse($sql);
+            $parsed = $sql_parser->parsed;
+            if ($parsed && $parsed['CREATE']) {
+                //建表语句
+
+                $install_table_name = $parsed['TABLE']['no_quotes']['parts'][0];
+                if(!preg_match("/^$table_prefix/is",$install_table_name)) {
+                    $real_table_name = $table_prefix.$install_table_name;
+                    $parse_result[] = $install_table_name;
+                }else {
+                    $real_table_name = $install_table_name;
+                    $table_prefix_strlen = strlen($table_prefix);
+                    $install_table_name = substr($real_table_name,$table_prefix_strlen);
+                    $parse_result[] = $install_table_name;
+                }
+
+                $table_exist = false ;
+                if(!$parsed['CREATE']['not-exists']) {
+                    //存在自检查，则不需要代码检查
+                    $table_exist = $plugin_dao->has_table($install_table_name);
+                }
+                //存在的话，就不在处理
+                //表必须要有一个自增字段
+                if (!preg_match('/primary key/is',$item)) {
+                    throw new \Exception('数据表必须有一个主键',10051);
+                }
+
+                if (!preg_match('/auto_increment/is',$item)) {
+                    throw new \Exception('数据表必须有一个自增字段',10052);
+                }
+
+                if (!preg_match('/company_id/is',$item)) {
+                    throw new \Exception('数据表必须有一个company_id,作为大Bid',10053);
+                }
+
+
+                if ($table_exist) continue;
+
+                $sql = preg_replace("/`$install_table_name`/is","`$real_table_name`",$sql);
+
+                if($sql) {
+                    $flag = $plugin_dao->create_table($sql);
+                    if (!$flag) {
+                        throw new \Exception("'$install_table_name' 数据表安装错误","10032");
+                    }
+                }
+
+
+            }
+
+        }
+        unset($sql_parser);
+
 
     }
 }
