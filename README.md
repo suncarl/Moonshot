@@ -81,7 +81,7 @@ result:
     $res = $this->db->table('sys_config')->where($map)->get()
     $res = reset($res);
 ```
-* 使用自定义查询 使用 whereRaw()
+* 使用自定义查询 使用 whereRaw() 和修改记录
 ```
     $map['mtime'] = time();
     $flag =$this->db->table('sys_config')->whereRaw('exam_id = ? and openid = ? and cday = ? ',[$exam_id,$openid,$cday])->update($map);
@@ -143,6 +143,39 @@ result:
         ->forPage($page,$pre_page)
         ->select("et.*","ba.name as bussine_name","ba.logo_url")
         ->get();
+```
+
+* [高级] 获得表前缀
+```
+    $this->db->getConnection()->getTablePrefix();
+```
+
+* [高级] 判定表是否存在
+```
+    $this->db->schema()->hasTable($table_name);
+```
+
+* [高级] 删除表
+```
+    $this->db->schema()->dropIfExists($table_name);
+```
+
+* [高级] 改表名
+```
+    $this->db->schema()->rename($old_table_name,$new_table_name);
+```
+
+* [高级] 执行sql
+```
+    方法1：$this->db->getConnection()->getPdo()->exec( $sql );
+    方法2：$this->db->getConnection()->statement($sql);
+```
+
+* [高级] 调试，输出sql
+```
+$this->db->getConnection()->enableQueryLog();
+$res = $this->db->table('table_name')->get();
+$this->db->getConnection()->disableQueryLog();
 ```
 
 
