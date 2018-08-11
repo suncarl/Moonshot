@@ -81,8 +81,8 @@ CREATE TABLE `ng_sys_admin_account` (
   KEY `idx_nickname` (`nickname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统管理员表';
 
-# insert into `ng_sys_admin_account` (`company_id`,`account`,`avatar`,`password`,`slat`,`nickname`,`expire_time`,`status`,`ctime`,`mtime`)
-VALUES (123,'admin','default','57395bc5b73f0e880830285482f716f5','tq8smr','管理员',0,1,1533183790,1533183790)
+insert into `ng_sys_admin_account` (`company_id`,`account`,`avatar`,`password`,`slat`,`nickname`,`expire_time`,`status`,`ctime`,`mtime`)
+VALUES (123,'admin','default','57395bc5b73f0e880830285482f716f5','tq8smr','管理员',0,1,1533183790,1533183790);
 
 CREATE TABLE `ng_sys_admin_account_faillog` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -182,7 +182,7 @@ insert into  `ng_sys_menu` (`id`, `parentid`, `app`, `model`, `action`, `data`,`
 
 insert into  `ng_sys_menu` (`id`, `parentid`, `app`, `model`, `action`, `data`,`category`, `placehold`, `use_priv`,`type`,`link`, `status`, `name`, `icon`, `remark`, `listorder` ,`ctime`,`mtime`) VALUES
 (10,1,'admin','index','info','','综合','',1,1,'',1,'信息','th','',30,1532693502,1532693502),
-(11,1,'admin','index','dashboard','','综合','',1,1,'',1,'仪表盘','th','',30,1532693502,1532693502)
+(11,1,'admin','index','dashboard','','综合','',1,1,'',1,'仪表盘','th','',30,1532693502,1532693502);
 
 CREATE TABLE `ng_sys_config` (
   `id` smallint(6) unsigned NOT NULL,
@@ -195,4 +195,4 @@ CREATE TABLE `ng_sys_config` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='后台管理配置表';
 
 insert into `ng_sys_config` (`id`,`name`,`config`,`ctime`,`mtime`) VALUES
-(1,'sys_global','{\'site_title\':\'插件管理平台\',\'site_desc\':\'插件,管理,平台,微信,小程序\',\'site_style\':\'bluesky\'}',1532693502,1532693502)
+(1,'sys_global','{"site_title":"插件管理平台","site_desc":"插件,管理,平台,微信,小程序","site_style":"bluesky"}',1532693502,1532693502);
