@@ -57,6 +57,15 @@ class Plugins extends PermissionBase
                 'link'=>1,'status'=>1,'name'=>'应用中心','icon'=>'th','items'=>$sub_plugin_menus,
             ],
         ];
+
+
+
+        $plugin_dao = new model\PluginModel($this->service);
+        $plugin_custom_menus = $plugin_dao->getSubMenu(0);
+        if ($plugin_custom_menus) {
+            $plugin_menus = array_merge($plugin_menus,$plugin_custom_menus);
+        }
+
         $plugin_menus = $this->recursion_menus($req,$plugin_menus);
 
         $data = [

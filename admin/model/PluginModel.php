@@ -31,6 +31,22 @@ class PluginModel extends AdminModel
         return $this->db->schema()->dropIfExists($table_name);
     }
 
+    public function getSubMenu($parent_id)
+    {
+        $map = [
+            'status'=> 1,
+            'parentid' => $parent_id,
+        ];
+        $res = $this->db->table('sys_plugins_menu')->orderBy('listorder','desc')->where($map)->get();
+        $res = reset($res);
+        foreach ($res as $key => $val ) {
+            $res[$key] = (array)$val;
+            $subMenus = $this->getSubMenu($res[$key]['id']);
+            $res[$key]['items'] = $subMenus;
+        }
+        return $res;
+    }
+
     /**
      * 插件菜单表
      * @param $map
