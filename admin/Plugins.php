@@ -127,26 +127,54 @@ class Plugins extends PermissionBase
      */
     public function centerAction(RequestHelper $req,array $preData)
     {
+
         $plugin_lists = $this->load_plugin_datas($req,$preData);
         $status = true;
         $mess = '成功';
         if($plugin_lists) {
 
-            $installed = 0;
+            $plugin_dao = new model\PluginModel($this->service);
+            $where = [];
+            $pre_page = 20;
+            $install_plugin_lists = $plugin_dao->getPluginLists($where,['id','title','class_name','version'],[['mtime','desc']],$pre_page);
+            $checked_install_data = [];
+            if ($install_plugin_lists) {
+                foreach($install_plugin_lists as $val) {
+                    $key = $val['class_name'].'_'.$val['version'];
+                    $key = md5($key);
+                    $checked_install_data[$key] = $val['id'];
+                }
+            }
+
+
             $path = [
                 'mark' => 'sys',
                 'bid'  => $req->company_id,
                 'pl_name'=>'admin',
             ];
-            $query = [
-                'mod'=>'plugins',
-                'installed'=>$installed,
 
-            ];
 
             foreach ($plugin_lists as $key => $val) {
 
-                $file = $val['name'] ? strtolower($val['name']) : $val['file'];
+                $file = $val['base']['name'] ? strtolower($val['base']['name']) : $val['file'];
+                $check_key = md5($file."_".$val['base']['version']);
+
+                $plugin_id = 0;
+                if($checked_install_data[$check_key]) {
+                    $installed = 1;
+                    $plugin_id = $checked_install_data[$check_key];
+                } else {
+                    $installed = 0;
+                }
+
+                $plugin_lists[$key]['installed'] = $installed;
+                $query = [
+                    'mod'=>'plugins',
+                    'installed'=>$installed,
+                    'plugin_id' => $plugin_id,
+
+                ];
+
                 $install_url = array_merge($query,['act'=>'install','file'=>$file]);
                 $plugin_lists[$key]['install_url'] = urlGen($req,$path,$install_url,true);
 
@@ -172,6 +200,8 @@ class Plugins extends PermissionBase
 
     public function infoAction(RequestHelper $req,array $preData)
     {
+
+        $plugin_id = $req->query_datas['plugin_id'];
         $status = false;
         $mess = '失败';
 
@@ -190,10 +220,25 @@ class Plugins extends PermissionBase
         $data = [
             'back_url'=>$back_url,
         ];
+
+
         if($req->query_datas['file']) {
             $plugin_lists = $this->load_plugin_datas($req,$preData,$req->query_datas['file']);
+
+            if ($plugin_id > 0) {
+                $plugin_dao = new model\PluginModel($this->service);
+                $where = [
+                    'id'=>$plugin_id
+                ];
+
+                $install_plugin_item = $plugin_dao->getPluginInfo($where,['id','title','class_name','version']);
+                if ($install_plugin_item) {
+                    $installed = 1;
+                }
+            }
+
+
             if ($plugin_lists) {
-                $installed = 0;
                 $path = [
                     'mark' => 'sys',
                     'bid'  => $req->company_id,
@@ -202,12 +247,14 @@ class Plugins extends PermissionBase
                 $query = [
                     'mod'=>'plugins',
                     'installed'=>$installed,
-
+                    'plugin_id' => $plugin_id,
                 ];
 
                 foreach ($plugin_lists as $key => $val) {
 
-                    $file = $val['name'] ? strtolower($val['name']) : $val['file'];
+                    $plugin_lists[$key]['installed'] = $installed;
+
+                    $file = $val['base']['name'] ? strtolower($val['base']['name']) : $val['file'];
                     $install_url = array_merge($query,['act'=>'install','file'=>$file]);
                     $plugin_lists[$key]['install_url'] = urlGen($req,$path,$install_url,true);
 
