@@ -21,9 +21,14 @@ class PluginModel extends AdminModel
         return $this->db->schema()->hasTable($table_name);
     }
 
-    public function create_table($sql)
+    public function create_table($create_sql)
     {
-        return $this->db->getConnection()->statement($sql);
+        return $this->db->getConnection()->statement($create_sql);
+    }
+
+    public function drop_table($table_name)
+    {
+        return $this->db->schema()->dropIfExists($table_name);
     }
 
     /**
@@ -45,12 +50,13 @@ class PluginModel extends AdminModel
     {
         $process = $this->db->table($this->plugin_menu_table)->where($where);
         if($filed) {
-            $process->select($filed);
+            $process = $process->select($filed);
         }
         $res = $process->first();
         $res = (array)$res;
         return $res;
     }
+
     public function updatePluginMenu($where,$map)
     {
         return $this->db->table($this->plugin_menu_table)->where($where)->update($map);
@@ -71,11 +77,34 @@ class PluginModel extends AdminModel
         return $this->db->table($this->plugin_table)->where($where)->count();
     }
 
+    public function getPluginLists($where,$filed='',$orderby=[],$limit='')
+    {
+        $process = $this->db->table($this->plugin_table)->where($where);
+        if($filed) {
+            $process = $process->select($filed);
+        }
+        if($orderby && is_array($orderby)) {
+            foreach ($orderby as $order_item) {
+                $process = $process->orderBy($order_item[0],$order_item[1]);
+            }
+        }
+
+        if($limit) {
+            $process = $process->limit($limit);
+        }
+        $res = $process->get();
+        $res = reset($res);
+        if($res) {
+            $res = json_decode(json_encode($res),true);
+        }
+        return $res;
+    }
+
     public function getPluginInfo($where,$filed='')
     {
         $process = $this->db->table($this->plugin_table)->where($where);
         if($filed) {
-            $process->select($filed);
+            $process = $process->select($filed);
         }
         $res = $process->first();
         $res = (array)$res;

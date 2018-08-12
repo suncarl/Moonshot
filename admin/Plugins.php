@@ -37,15 +37,25 @@ class Plugins extends PermissionBase
         $default_frame_url = urlGen($req,$path,$query,true);
 
 
+        $sub_plugin_menus = [
+            ['id'=>81003,'parentid'=>81002,'app'=>'admin' ,'model'=>'plugins','action'=>'center',
+                'data'=>'','category'=>'应用','placehold'=>'','use_priv'=>1,'type'=>1,
+                'link'=>1,'status'=>1,'name'=>'应用市场','icon'=>'th'
+            ],
+            ['id'=>81004,'parentid'=>81002,'app'=>'admin' ,'model'=>'plugins','action'=>'has',
+                'data'=>'','category'=>'应用','placehold'=>'','use_priv'=>1,'type'=>1,
+                'link'=>1,'status'=>1,'name'=>'已安装','icon'=>'th'
+            ],
+        ];
         $plugin_menus = [
-            ['id'=>1,'parentid'=>0,'app'=>'admin' ,'model'=>'plugins','action'=>'info',
+            ['id'=>81001,'parentid'=>0,'app'=>'admin' ,'model'=>'plugins','action'=>'info',
                 'data'=>'','category'=>'应用','placehold'=>'','use_priv'=>1,'type'=>1,
                 'link'=>1,'status'=>1,'name'=>'信息','icon'=>'th'
             ],
-            ['id'=>2,'parentid'=>0,'app'=>'admin' ,'model'=>'plugins','action'=>'center',
+            ['id'=>81002,'parentid'=>0,'app'=>'admin' ,'model'=>'plugins','action'=>'center',
                 'data'=>'','category'=>'应用','placehold'=>'','use_priv'=>1,'type'=>1,
-                'link'=>1,'status'=>1,'name'=>'应用中心','icon'=>'th'
-            ]
+                'link'=>1,'status'=>1,'name'=>'应用中心','icon'=>'th','items'=>$sub_plugin_menus,
+            ],
         ];
         $plugin_menus = $this->recursion_menus($req,$plugin_menus);
 
@@ -60,6 +70,27 @@ class Plugins extends PermissionBase
         return $this->render($status,$mess,$data,'template','plugin/index');
     }
 
+    /**
+     * 本地数据
+     * @param RequestHelper $req
+     * @param array $preData
+     * @return \libs\asyncme\ResponeHelper
+     */
+    public function hasAction(RequestHelper $req,array $preData)
+    {
+        $plugin_dao = new model\PluginModel($this->service);
+        $where = [];
+        $pre_page = 20;
+        $plugin_lists = $plugin_dao->getPluginLists($where,'',[['mtime','desc']],$pre_page);
+
+        $status = true;
+        $mess = '成功';
+
+        $data = [
+            'plugin_lists'=>$plugin_lists,
+        ];
+        return $this->render($status,$mess,$data,'template','plugin/has');
+    }
     /**
      * 应用中心
      * @param RequestHelper $req
@@ -179,50 +210,27 @@ class Plugins extends PermissionBase
     }
 
 
-    /**
-     * @param RequestHelper $req
-     * @param array $preData
-     */
-    protected function load_plugin_datas(RequestHelper $req,array $preData,$filter='')
+
+    public function uninstallAction(RequestHelper $req,array $preData)
     {
-        $plugin_dir = '../plugins';
-        $plugins_lists = [];
-        if (is_dir($plugin_dir)) {
-            if ($filter==''){
-                $fp = opendir($plugin_dir);
-                while($file = readdir($fp)) {
-                    //去掉隐藏
-                    if(substr($file,0,1)=='.') continue;
+        try {
+            if($req->query_datas['file'] && $req->query_datas['plugin_id']) {
+                $plugin_dao = new model\PluginModel($this->service);
+                $where = [];
+                $where['id'] = $req->query_datas['plugin_id'];
+                $where['class_name'] = $req->query_datas['file'];
 
-                    if (file_exists($plugin_dir.'/'.$file.'/info.xml')) {
-                        $mtime = filemtime($plugin_dir.'/'.$file);
-                        $ctime = filectime($plugin_dir.'/'.$file);
-                        $plugins_lists[] = ['file'=>$file,'root'=>$plugin_dir,'ctime'=>$ctime,'mtime'=>$mtime];
-                    }
+                $plugin_info = $plugin_dao->getPluginInfo($where);
+                echo "<pre>";
+                var_dump($plugin_info);
+                echo "</pre>";
 
-                }
-                closedir($fp);
-            } else {
-                if (file_exists($plugin_dir.'/'.$filter.'/info.xml')) {
-                    $mtime = filemtime($plugin_dir.'/'.$filter);
-                    $ctime = filectime($plugin_dir.'/'.$filter);
-                    $plugins_lists[] = ['file'=>$filter,'root'=>$plugin_dir,'ctime'=>$ctime,'mtime'=>$mtime];
-                }
             }
 
+        } catch (\Exception $e) {
+            $error = $e->getMessage();
         }
-        $result = [];
-        if ($plugins_lists) {
-            foreach ($plugins_lists as $key=>$val) {
-                $xml = simplexml_load_file($val['root'].'/'.$val['file'].'/info.xml',null,LIBXML_NOCDATA);
-                $json_xml=json_encode($xml);
-                $dejson_xml=json_decode($json_xml,true);
-                $result[] = array_merge($dejson_xml,$val);
-            }
-        }
-        return $result;
     }
-
 
 
     /**
@@ -333,6 +341,50 @@ class Plugins extends PermissionBase
         ];
 
         return $this->render($status,$mess,$data,'template','plugin/install');
+    }
+
+    /**
+     * @param RequestHelper $req
+     * @param array $preData
+     */
+    protected function load_plugin_datas(RequestHelper $req,array $preData,$filter='')
+    {
+        $plugin_dir = '../plugins';
+        $plugins_lists = [];
+        if (is_dir($plugin_dir)) {
+            if ($filter==''){
+                $fp = opendir($plugin_dir);
+                while($file = readdir($fp)) {
+                    //去掉隐藏
+                    if(substr($file,0,1)=='.') continue;
+
+                    if (file_exists($plugin_dir.'/'.$file.'/info.xml')) {
+                        $mtime = filemtime($plugin_dir.'/'.$file);
+                        $ctime = filectime($plugin_dir.'/'.$file);
+                        $plugins_lists[] = ['file'=>$file,'root'=>$plugin_dir,'ctime'=>$ctime,'mtime'=>$mtime];
+                    }
+
+                }
+                closedir($fp);
+            } else {
+                if (file_exists($plugin_dir.'/'.$filter.'/info.xml')) {
+                    $mtime = filemtime($plugin_dir.'/'.$filter);
+                    $ctime = filectime($plugin_dir.'/'.$filter);
+                    $plugins_lists[] = ['file'=>$filter,'root'=>$plugin_dir,'ctime'=>$ctime,'mtime'=>$mtime];
+                }
+            }
+
+        }
+        $result = [];
+        if ($plugins_lists) {
+            foreach ($plugins_lists as $key=>$val) {
+                $xml = simplexml_load_file($val['root'].'/'.$val['file'].'/info.xml',null,LIBXML_NOCDATA);
+                $json_xml=json_encode($xml);
+                $dejson_xml=json_decode($json_xml,true);
+                $result[] = array_merge($dejson_xml,$val);
+            }
+        }
+        return $result;
     }
 
     /**
@@ -518,4 +570,6 @@ class Plugins extends PermissionBase
 
 
     }
+
+
 }
