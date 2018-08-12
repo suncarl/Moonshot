@@ -38,17 +38,17 @@
         {% if plugin_lists %}
         {% for key,val in plugin_lists %}
         <li>
-            {% if val.icon %}
-            <a href="{{val.info_url}}"><img class="icon" src="/assets/plugin/{{val.class_name}}/{{val.icon}}" /></a>
+            {% if val.base.icon %}
+            <a href="{{val.info_url}}"><img class="icon" src="/assets/plugin/{{val.file}}/{{val.base.icon}}" /></a>
             {% else %}
             <img class="icon" src="#"/>
             {% endif %}
             <div class="info">
-                <div class="pl_title"><a href="{{val.info_url}}">{{val.title}} V{{val.version}}</a></div>
-                <div class="pl_cate">分类:{{val.category}}</div>
+                <div class="pl_title"><a href="{{val.info_url}}">{{val.base.title}} V{{val.base.version}}</a></div>
+                <div class="pl_cate">分类:{{val.base.category}}</div>
                 <!--<div class="pl_info">{{val.base.desc}}</div>-->
-                <div class="pl_author">作者:{{val.author}}</div>
-                <div class="pl_time">时间:{{val.pub_time}}</div>
+                <div class="pl_author">作者:{{val.base.author}}</div>
+                <div class="pl_time">时间:{{val.base.time}}</div>
                 <div class="pl_op">操作:
                     <a href="{{val.uninstall_url}}">卸载</a>
                     <a href="{{val.review_url}}">审核</a>

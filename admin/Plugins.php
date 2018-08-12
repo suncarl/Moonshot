@@ -82,6 +82,35 @@ class Plugins extends PermissionBase
         $where = [];
         $pre_page = 20;
         $plugin_lists = $plugin_dao->getPluginLists($where,'',[['mtime','desc']],$pre_page);
+        if ($plugin_lists) {
+            $plugin_lists = $this->format_plugin_data($plugin_lists);
+        }
+
+        $installed = 1;
+        $path = [
+            'mark' => 'sys',
+            'bid'  => $req->company_id,
+            'pl_name'=>'admin',
+        ];
+        $query = [
+            'mod'=>'plugins',
+            'installed'=>$installed,
+
+        ];
+        foreach ($plugin_lists as $key => $val) {
+
+            $file = $val['name'] ? strtolower($val['name']) : $val['file'];
+
+
+            $uninstall_url = array_merge($query,['act'=>'uninstall','file'=>$file,'plugin_id'=>$val['id']]);
+            $plugin_lists[$key]['uninstall_url'] = urlGen($req,$path,$uninstall_url,true);
+
+            $review_url = array_merge($query,['act'=>'review','file'=>$file,'plugin_id'=>$val['id']]);
+            $plugin_lists[$key]['review_url'] = urlGen($req,$path,$review_url,true);
+
+            $info_url = array_merge($query,['act'=>'info','file'=>$file,'plugin_id'=>$val['id']]);
+            $plugin_lists[$key]['info_url'] = urlGen($req,$path,$info_url,true);
+        }
 
         $status = true;
         $mess = '成功';
@@ -343,6 +372,45 @@ class Plugins extends PermissionBase
         return $this->render($status,$mess,$data,'template','plugin/install');
     }
 
+    /**
+     * 格式化数据
+     * @param $plugin_data
+     * @return array
+     */
+    protected function format_plugin_data($plugin_datas)
+    {
+        $format_data = [];
+        foreach ($plugin_datas as $key=>$plugin_data) {
+            $format_data[$key]['id'] = $plugin_data['id'];
+            if (isset($plugin_data['title'])) {
+                $format_data[$key]['base']['title'] = $plugin_data['title'];
+            }
+            if (isset($plugin_data['category'])) {
+                $format_data[$key]['base']['category'] = $plugin_data['category'];
+            }
+            if (isset($plugin_data['class_name'])) {
+                $format_data[$key]['base']['name'] = $plugin_data['class_name'];
+                $format_data[$key]['file'] = $plugin_data['class_name'];
+            }
+            if (isset($plugin_data['desc'])) {
+                $format_data[$key]['base']['desc'] = $plugin_data['desc'];
+            }
+            if (isset($plugin_data['version'])) {
+                $format_data[$key]['base']['version'] = $plugin_data['version'];
+            }
+            if (isset($plugin_data['author'])) {
+                $format_data[$key]['base']['author'] = $plugin_data['author'];
+            }
+            if (isset($plugin_data['icon'])) {
+                $format_data[$key]['base']['icon'] = $plugin_data['icon'];
+            }
+            if (isset($plugin_data['pub_time'])) {
+                $format_data[$key]['base']['time'] = $plugin_data['pub_time'];
+            }
+        }
+
+        return $format_data;
+    }
     /**
      * @param RequestHelper $req
      * @param array $preData
