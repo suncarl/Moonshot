@@ -64,7 +64,7 @@ class PluginModel extends AdminModel
                     if ($count) {
                         $max_id = $this->db->table($table_name)->max('id');
                         $min_id = $this->db->table($table_name)->min('id');
-                        $step = 2;
+                        $step = 1000;
                         $current_start_id = $min_id;
                         $current_end_id = ($min_id+$step)<=$max_id ? ($min_id+$step) : $max_id;
 
