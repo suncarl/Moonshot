@@ -2,7 +2,7 @@
 <root>
     <base>
         <title>广告管理</title>
-        <name>advertisement</name>
+        <name>adv_manager</name>
         <desc><![CDATA[广告管理插件]]></desc>
         <category>default</category>
         <version>1.0</version>

@@ -39,6 +39,14 @@
 * 普通插件在plugins目录里，插件只有一个入口文件。
 * admin为特殊的插件，特殊点在于使用sys进行定义，同时插件名由于是admin，如果采用了mod=入口类名的方式进行调用，入口类名的传参和命名规则与普通插件的一致
 
+# 插件数据表的规范
+* 数据表的表结构必须以create table 开头，if not exists 为非必须
+* 数据表的表表名必须为小写字符串，并且已英文字母开头，单词直接的分割使用半角的下滑线进行分割。
+* 数据表必须有拥有一个主键。
+* 数据表必须有一个自增类型，通常跟主键捆绑。
+* 数据表必须有一个company_id 的字段，作为大B的标识字段
+* 数据表的表名可以不需要带系统的表前缀，当然带上也不会报错。
+
 # 模版 useage
 * 模版变量连接符合 ～
 ```
@@ -81,7 +89,7 @@ result:
     $res = $this->db->table('sys_config')->where($map)->get()
     $res = reset($res);
 ```
-* 使用自定义查询 使用 whereRaw()
+* 使用自定义查询 使用 whereRaw() 和修改记录
 ```
     $map['mtime'] = time();
     $flag =$this->db->table('sys_config')->whereRaw('exam_id = ? and openid = ? and cday = ? ',[$exam_id,$openid,$cday])->update($map);
@@ -145,6 +153,39 @@ result:
         ->get();
 ```
 
+* [高级] 获得表前缀
+```
+    $this->db->getConnection()->getTablePrefix();
+```
+
+* [高级] 判定表是否存在
+```
+    $this->db->schema()->hasTable($table_name);
+```
+
+* [高级] 删除表
+```
+    $this->db->schema()->dropIfExists($table_name);
+```
+
+* [高级] 改表名
+```
+    $this->db->schema()->rename($old_table_name,$new_table_name);
+```
+
+* [高级] 执行sql
+```
+    方法1：$this->db->getConnection()->getPdo()->exec( $sql );
+    方法2：$this->db->getConnection()->statement($sql);
+```
+
+* [高级] 调试，输出sql
+```
+$this->db->getConnection()->enableQueryLog();
+$res = $this->db->table('table_name')->get();
+$this->db->getConnection()->disableQueryLog();
+```
+
 
 # docs
 * twig文档 https://www.kancloud.cn/yunye/twig-cn/159454
@@ -153,6 +194,7 @@ result:
 * 图形验证码 https://github.com/gregwar/captcha
 * slim-session https://github.com/bryanjhv/slim-session
 * cookie https://github.com/delight-im/PHP-Cookie
+* PHP-SQL-Parser https://github.com/greenlion/PHP-SQL-Parser
 
 
 fork push test!

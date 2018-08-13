@@ -277,4 +277,11 @@ function ng_mysql_json_safe_encode($data)
     return addslashes(json_encode($data,JSON_UNESCAPED_UNICODE));
 }
 
+function dump($data)
+{
+    echo "<pre>";
+    var_dump($data);
+    echo "</pre>";
+}
+
 

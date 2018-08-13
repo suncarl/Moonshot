@@ -72,4 +72,13 @@ class AdminModel
         echo __CLASS__;
     }
 
+    /**
+     * 获得表前缀
+     * @return mixed
+     */
+    public function get_table_prefix()
+    {
+        return $this->db->getConnection()->getTablePrefix();
+    }
+
 }
