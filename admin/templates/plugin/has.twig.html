@@ -50,13 +50,8 @@
                 <div class="pl_author">作者:{{val.base.author}}</div>
                 <div class="pl_time">时间:{{val.base.time}}</div>
                 <div class="pl_op">操作:
-                    {% if val.installed == 1 %}
                     <a href="{{val.uninstall_url}}">卸载</a>
                     <a href="{{val.review_url}}">审核</a>
-                    {% else %}
-                    <a href="{{val.install_url}}">安装</a>
-                    {% endif %}
-
                 </div>
             </div>
         </li>
