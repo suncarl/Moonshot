@@ -173,6 +173,12 @@ result:
     $this->db->schema()->rename($old_table_name,$new_table_name);
 ```
 
+* [高级] 导入数据
+```
+    $sql = file_get_contents($sql_file);
+    $this->db->getConnection()->unprepared($sql);
+```
+
 * [高级] 执行sql
 ```
     方法1：$this->db->getConnection()->getPdo()->exec( $sql );
@@ -183,6 +189,7 @@ result:
 ```
 $this->db->getConnection()->enableQueryLog();
 $res = $this->db->table('table_name')->get();
+$log = $this->db->getConnection()->getQueryLog();
 $this->db->getConnection()->disableQueryLog();
 ```
 
