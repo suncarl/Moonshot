@@ -305,16 +305,44 @@ class Plugins extends PermissionBase
                 $where['id'] = $req->query_datas['plugin_id'];
                 $where['class_name'] = $req->query_datas['file'];
 
+                // 1.查找插件信息
                 $plugin_info = $plugin_dao->getPluginInfo($where);
-                echo "<pre>";
-                var_dump($plugin_info);
-                echo "</pre>";
+                if ($plugin_info) {
+                    if ($plugin_info['plugin_process']) {
+                        $plugin_info['plugin_process'] = json_decode(stripslashes($plugin_info['plugin_process']),true);
+                    }
+
+                    // 2.对数据表的数据进行导出打包
+
+                    if ($plugin_info['plugin_process']['install_table']) {
+
+                        $backup_log =$plugin_dao->backup_plugin_tables($where['class_name'],$plugin_info['plugin_process']['install_table'],"../backup");
+                        dump($backup_log);
+                    }
+                }
+
+
+
+                // 3.删除菜单
+
+                // 4.删除关联关系和权限
+
+                // 5.删除插件数据表
+
+                // 6.删除插件表的记录
+
+                // 7。写日志
 
             }
 
         } catch (\Exception $e) {
             $error = $e->getMessage();
         }
+
+        $status = true;
+        $mess = '成功';
+        $data =[];
+        return $this->render($status,$mess,$data,'template','empty');
     }
 
 
