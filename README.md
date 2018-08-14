@@ -173,6 +173,12 @@ result:
     $this->db->schema()->rename($old_table_name,$new_table_name);
 ```
 
+* [高级] 导入数据
+```
+    $sql = file_get_contents($sql_file);
+    $this->db->getConnection()->unprepared($sql);
+```
+
 * [高级] 执行sql
 ```
     方法1：$this->db->getConnection()->getPdo()->exec( $sql );
@@ -183,7 +189,42 @@ result:
 ```
 $this->db->getConnection()->enableQueryLog();
 $res = $this->db->table('table_name')->get();
+$log = $this->db->getConnection()->getQueryLog();
 $this->db->getConnection()->disableQueryLog();
+```
+
+# Monolog 使用和不同水平日志的添加
+* 添加信息日志
+```
+    $this->service->getLogger()->addInfo($info);
+```
+* 添加警告日志
+```
+    $this->service->getLogger()->addWarning($info);
+```
+* 添加注意日志
+```
+    $this->service->getLogger()->addNotice($info);
+```
+* 添加错误日志
+```
+    $this->service->getLogger()->addError($info);
+```
+* 添加调试日志
+```
+    $this->service->getLogger()->addDebug($info);
+```
+* 添加报警日志
+```
+    $this->service->getLogger()->addAlert($info);
+```
+* 添加关键日志
+```
+    $this->service->getLogger()->addCritical($info);
+```
+* 添加紧急日志
+```
+    $this->service->getLogger()->addEmergency($info);
 ```
 
 

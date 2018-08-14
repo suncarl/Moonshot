@@ -15,18 +15,43 @@
 
 {% block frame_content %}
 <form class="well form-search" method="post" action="#">
-    <a class="btn btn-danger"  href="{{ back_url|default('#') }}">返回</a>
+    <a class="btn btn-danger" id="goback_url"  href="{{ back_url|default('#') }}">返回</a>
 
     <span style="padding-left: 24px;">
         {% if status %}
-        恭喜你! {{ title }} [ 版本：{{ version }} ] 安装成功。
+        恭喜你! {{ title }} [ 版本：{{ version }} ] {{ operate }}成功。
         {% else %}
-        很遗憾，安装失败 <br/> {{ error }}
+        很遗憾，{{ operate }}失败 <br/> {{ error }}
         {% endif %}
     </span>
+    <span> 系统将在 <i id="delay_time">{{ delay_time }}</i> 秒后自动返回。 </span>
 </form>
-<div class="info_header">
-
-
+<div class="info_header" style="background: #fcfcfc;">
+    {% if detail %}
+    <ul style="padding-left: 92px;">
+    {% for key,val in detail %}
+    <ol>{{val.title}} : {{val.mess}}</ol>
+    {% endfor %}
+    </ul>
+    {% endif %}
 </div>
+{% endblock %}
+{% block frame_footer %}
+<script type="application/javascript">
+    $(function(){
+        var goback_url = $('#goback_url').attr('href');
+        function auto_goback(){
+            var delay_time = $('#delay_time').text();
+            delay_time = parseInt(delay_time);
+            if (delay_time<1) {
+                redirect(goback_url);
+            } else {
+                $('#delay_time').text(delay_time-1);
+                setTimeout(auto_goback,1000);
+            }
+        }
+        setTimeout(auto_goback,1000)
+    });
+</script>
+
 {% endblock %}

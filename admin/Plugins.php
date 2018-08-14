@@ -299,22 +299,110 @@ class Plugins extends PermissionBase
     public function uninstallAction(RequestHelper $req,array $preData)
     {
         try {
+            $uninstall_detail = [];
             if($req->query_datas['file'] && $req->query_datas['plugin_id']) {
                 $plugin_dao = new model\PluginModel($this->service);
                 $where = [];
                 $where['id'] = $req->query_datas['plugin_id'];
                 $where['class_name'] = $req->query_datas['file'];
 
+                // 1.查找插件信息
                 $plugin_info = $plugin_dao->getPluginInfo($where);
-                echo "<pre>";
-                var_dump($plugin_info);
-                echo "</pre>";
+                if ($plugin_info) {
+                    if ($plugin_info['plugin_process']) {
+                        $plugin_info['plugin_process'] = json_decode(stripslashes($plugin_info['plugin_process']),true);
+                    }
+                    // 2.对数据表的数据进行导出打包
+
+                    if ($plugin_info['plugin_process']['install_table']) {
+
+                        $backup_root = NG_ROOT."/backup/".$where['class_name'];
+                        if (!is_dir($backup_root."/")) {
+                            mkdir($backup_root."/",0755,true);
+                        }
+                        $backup_log =$plugin_dao->backup_plugin_tables($where['class_name'],$plugin_info['plugin_process']['install_table'],$backup_root);
+                        $uninstall_detail[] = ['title'=>'备份数据表','mess'=>$backup_log];
+                    }
+
+                    // 3.删除菜单
+                    if ($plugin_info['plugin_process']['menu']) {
+                        foreach($plugin_info['plugin_process']['menu'] as $uninstall_menu) {
+                            $uninstall_detail[] = ['title'=>'删除菜单','mess'=>$uninstall_menu['plugin_name'].'/'.$uninstall_menu['action']];
+                            $plugin_dao->deletePluginMenu(['id'=>$uninstall_menu['id']]);
+                        }
+                    }
+                    // 4.删除关联关系和权限
+                    $plugin_rel_where = ['plugin_id'=>$plugin_info['id']];
+                    $plugin_rel_count =$plugin_dao->getPluginRelCount($plugin_rel_where);
+                    if ($plugin_rel_count) {
+                        $plugin_dao->deletePluginRel($plugin_rel_where);
+                        $uninstall_detail[] = ['title'=>'删除关联关系','mess'=>$plugin_rel_count.'条'];
+                    }
+
+
+                    // 5.删除插件数据表
+                    if ($plugin_info['plugin_process']['install_table']) {
+                        foreach ($plugin_info['plugin_process']['install_table'] as $uninstall_table) {
+                            $plugin_dao->drop_table($uninstall_table);
+                            $uninstall_detail[] = ['title'=>'删除表结构','mess'=>$uninstall_table];
+                        }
+                    }
+
+                    // 6.删除插件表的记录
+                    $plugin_dao->deletePlugin(['id'=>$plugin_info['id']]);
+                    $uninstall_detail[] = ['title'=>'删除插件','mess'=>$plugin_info['title']."[ id:".$plugin_info['id']."]"];
+
+                    // 7.写日志
+                    $info = [
+                        '删除插件:'.$plugin_info['title'],
+                        "插件id:".$plugin_info['id'],
+                        "操作人:".$this->sessions['admin_name']."(".$this->sessions['admin_user'].")",
+                        "操作人id:".$this->sessions['admin_uid'],
+
+                    ];
+                    $info = implode(";",$info);
+                    $this->service->getLogger()->addInfo($info);
+                    $uninstall_detail[] = ['title'=>'记录日志'];
+
+                }
 
             }
 
         } catch (\Exception $e) {
             $error = $e->getMessage();
         }
+
+        $status = true;
+        $mess = '成功';
+        $delay_time = 5;
+
+        $path = [
+            'mark' => 'sys',
+            'bid'  => $req->company_id,
+            'pl_name'=>'admin',
+        ];
+        $query = [
+            'mod'=>'plugins',
+            'act'=>'has',
+
+        ];
+        $back_url = urlGen($req,$path,$query);
+
+        $data = [
+            'status'=>$status,
+            'title'=>$plugin_info['title'],
+            'version'=>$plugin_info['version'],
+            'back_url'=>$back_url,
+            'delay_time'=>$delay_time,
+            'error'=>$error,
+            'operate'=>'卸载',
+
+        ];
+        if (!empty($uninstall_detail)) {
+            $data['detail'] = $uninstall_detail;
+        }
+
+        return $this->render($status,$mess,$data,'template','plugin/install');
     }
 
 
@@ -422,7 +510,8 @@ class Plugins extends PermissionBase
             'version'=>$plugin_base_item['version'],
             'back_url'=>$back_url,
             'delay_time'=>$delay_time,
-            'error'=>$error
+            'error'=>$error,
+            'operate'=>'安装',
         ];
 
         return $this->render($status,$mess,$data,'template','plugin/install');
